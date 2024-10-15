@@ -98,6 +98,11 @@ public class DisplayArea extends JFrame implements Runnable {
                 repaint();
             }
         }
+        
+        public void generateCircle() {
+             // take bundle from DataProcessor and draw circle
+             
+        }
 
         @Override
         protected void paintComponent(Graphics g) {

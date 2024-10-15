@@ -23,6 +23,7 @@ public class EmotionDataClient implements Runnable {
 
             while(true){
                 // expecting 5 floats between 0 and 1
+                //0.1023334, 0.321731984, 0.993213, 0.342352, 0.7851349
                 String str = inputStream.readUTF();
                 emotionQueue.put(str);
             }

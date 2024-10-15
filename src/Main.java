@@ -4,5 +4,8 @@ public class Main {
        DisplayArea displayArea = new DisplayArea();
        Thread displayThread = new Thread(displayArea);
        displayThread.start();
+       
+       //DataProcessor dataProcessor = new DataProcessor(eyeTrackingQueue, emotionQueue);
+       //Thread dataThread = new Thread(dataProcessor);
    }
 }
