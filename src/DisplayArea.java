@@ -7,6 +7,11 @@ import javax.swing.*;
 public class DisplayArea extends JFrame implements Runnable {
 
     private DrawPanel drawPanel;
+    //keep tracking radius the same
+    private static final int TRACKING_RADIUS = 50;
+    private static final int CIRCLE_RADIUS = 50;
+    private int occupied_x = 0;
+    private int occupied_y = 0;
 
     public DisplayArea() {
         setTitle("Eye Tracking & Emotion Hub");
@@ -17,6 +22,7 @@ public class DisplayArea extends JFrame implements Runnable {
         JMenuItem startMenuItem = new JMenuItem("Start");
         startMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                //flip running flag
                 System.out.println("Start pressed");
             }
         });
@@ -28,6 +34,7 @@ public class DisplayArea extends JFrame implements Runnable {
         JMenuItem stopMenuItem = new JMenuItem("Stop");
         stopMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                //flip running flag
                 System.out.println("Stop pressed");
             }
         });
@@ -68,7 +75,7 @@ public class DisplayArea extends JFrame implements Runnable {
 
     // Circle drawing panel
     class DrawPanel extends JPanel {
-        private int x, y, width, height;
+        private int x, y, radius;
         private Color color;
         private Random random = new Random();
 
@@ -82,11 +89,10 @@ public class DisplayArea extends JFrame implements Runnable {
 
             if (panelWidth > 0 && panelHeight > 0) {
                 // Random size between 1 and 100
-                width = random.nextInt(100) + 1;
-                height = random.nextInt(100) + 1;
+                radius = random.nextInt(100) + 1;
 
-                x = random.nextInt(panelWidth - width);
-                y = random.nextInt(panelHeight - height);
+                x = random.nextInt(panelWidth - radius);
+                y = random.nextInt(panelHeight - radius);
 
                 color = new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256));
 
@@ -98,10 +104,51 @@ public class DisplayArea extends JFrame implements Runnable {
                 repaint();
             }
         }
-        
-        public void generateCircle() {
-             // take bundle from DataProcessor and draw circle
-             
+        // takes in Emotion, x/y
+        // NEUTRAL, FOCUS, STRESS, ENGAGEMENT, EXCITEMENT, INTEREST
+        // GRAY, YELLOW, RED, BLUE, GREEN, PURPLE
+        public void generateCircle(Emotion e, int x, int y) {
+            // take bundle from DataProcessor and draw circle
+            // determine if circle already exists at x/y
+            // if already in occupied_x +-50 and occupied_y +-50,
+            // expand visual radius by 50
+            if (occupied_x - TRACKING_RADIUS <= x && x <= occupied_x + TRACKING_RADIUS &&
+                occupied_y - TRACKING_RADIUS <= y && y <= occupied_y + TRACKING_RADIUS) {
+                // expand visual radius by 50
+                radius += 50;
+            } else {
+                // set new occupied x and y
+                occupied_x = x;
+                occupied_y = y;
+                radius = CIRCLE_RADIUS;
+            }
+            switch(e) {
+                case NEUTRAL:
+                    color = Color.GRAY;
+                    break;
+                case FOCUS:
+                    color = Color.YELLOW;
+                    break;
+                case STRESS:
+                    color = Color.RED;
+                    break;
+                case ENGAGEMENT:
+                    color = Color.BLUE;
+                    break;
+                case EXCITEMENT:
+                    color = Color.GREEN;
+                    break;
+                case INTEREST:
+                    color = Color.MAGENTA;
+                    break;
+                default:
+                    // default to black
+                    color = Color.BLACK;
+            }
+            System.out.println("Repainting...");
+            invalidate();
+            revalidate();
+            repaint();
         }
 
         @Override
@@ -110,7 +157,7 @@ public class DisplayArea extends JFrame implements Runnable {
             System.out.println("paintComponent called");
             if (color != null) {
                 g.setColor(color);
-                g.fillOval(x, y, width, height);
+                g.fillOval(x, y, radius, radius);
             }
         }
     }
