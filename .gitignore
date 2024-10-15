@@ -1,4 +1,7 @@
-.idea/
+.idea/*
+out/*
+src/AddInMain.txt
+
 
 # Compiled class file
 *.class
