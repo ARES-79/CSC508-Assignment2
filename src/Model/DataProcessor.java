@@ -2,49 +2,57 @@ package Model;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class DataProcessor implements Runnable{
 
-    private final BlockingQueue<String> eyeTrackingQueue;
-    private final BlockingQueue<String> emotionQueue;
     private static final Logger dpLog = Logger.getLogger(DataProcessor.class.getName());
 
-    public DataProcessor(BlockingQueue<String> eyeTrackingQueue, BlockingQueue<String> emotionQueue) {
-        this.eyeTrackingQueue = eyeTrackingQueue;
-        this.emotionQueue = emotionQueue;
+    private static final Emotion[] emotionValues = Emotion.values();
+
+
+    public enum Emotion{
+        NEUTRAL,
+        FOCUS,
+        STRESS,
+        ENGAGEMENT,
+        EXCITEMENT,
+        INTEREST
     }
+
 
     @Override
     public void run() {
         try {
             while (true) {
                 // Poll with a timeout to prevent blocking indefinitely
-                String eyeTrackingData = eyeTrackingQueue.poll(500, TimeUnit.MILLISECONDS);
-                String emotionData = emotionQueue.poll(500, TimeUnit.SECONDS);
+                String eyeTrackingData = Blackboard.getInstance().pollEyeTrackingQueue();
+                String emotionData = Blackboard.getInstance().pollEmotionQueue();
 
                 if (eyeTrackingData != null && emotionData != null) {
                     // Process the pair of data
                     List<Integer> coordinates = convertToIntegerList(eyeTrackingData);
                     List<Float> emotionScores = convertToFloatList(emotionData);
-                    //if either one of the sources has invalid data, log it and skip the pair
-                    if(!isValidEyeTrackingData(coordinates)){
-                        invalidEyeTrackingData(eyeTrackingData);
-                        continue;
-                    }
+                    Emotion prominentEmotion;
+                    //if the emotion data is invalid, use neutral
                     if(!isValidEmotionData(emotionScores)){
-                        invalidEmotionData(emotionData);
+                        logInvalidEmotionData(emotionData);
+                        prominentEmotion = Emotion.NEUTRAL;
+                    } else {
+                        prominentEmotion = getProminentEmotion(emotionScores);
+                    }
+                    if(!isValidEyeTrackingData(coordinates)){
+                        logInvalidEyeTrackingData(eyeTrackingData);
                         continue;
                     }
+
                     //TODO: get the prominent emotion and bundle the data together to make a circle
                 } else if (eyeTrackingData != null) {
                     List<Integer> coordinates = convertToIntegerList(eyeTrackingData);
                     if(!isValidEyeTrackingData(coordinates)){
-                        invalidEyeTrackingData(eyeTrackingData);
+                        logInvalidEyeTrackingData(eyeTrackingData);
                         continue;
                     }
                     //TODO: bundle the coordinates with a null or blank emotion
@@ -73,12 +81,12 @@ public class DataProcessor implements Runnable{
                     .map(Integer::parseInt)
                     .collect(Collectors.toList());
         } catch (NumberFormatException e) {
-            invalidEyeTrackingData(data);
+            logInvalidEyeTrackingData(data);
             return null;
         }
     }
 
-    private void invalidEyeTrackingData(String data){
+    private void logInvalidEyeTrackingData(String data){
         dpLog.warning("Eye-tracking data must be in the form \"int, int\"\n where both are >= 0." +
                 "Invalid eye-tracking data format: " + data);
     }
@@ -95,12 +103,28 @@ public class DataProcessor implements Runnable{
                     .map(Float::parseFloat)
                     .collect(Collectors.toList());
         } catch (NumberFormatException e) {
-            invalidEmotionData(data);
+            logInvalidEmotionData(data);
             return null;  // Or return an empty list, or handle the error as needed
         }
     }
 
-    private void invalidEmotionData(String data){
+    public Emotion getProminentEmotion(List<Float> emotionScores){
+        if (emotionScores == null || emotionScores.isEmpty()) {
+            throw new IllegalArgumentException("List must not be null or empty");
+        }
+
+        int maxIndex = 0;  // Assume the first element is the largest initially
+        for (int i = 1; i < emotionScores.size(); i++) {
+            // If current element is greater than the current max, update maxIndex
+            if (emotionScores.get(i) > emotionScores.get(maxIndex)) {
+                maxIndex = i;
+            }
+        }
+
+        return emotionValues[maxIndex + 1];
+    }
+
+    private void logInvalidEmotionData(String data){
         dpLog.warning("Emotion data is expected to be a comma seperated list of 5 floats between 0 and 1." +
                 "Invalid emotion data format: " + data);
     }
