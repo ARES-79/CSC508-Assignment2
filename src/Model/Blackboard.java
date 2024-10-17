@@ -1,8 +1,10 @@
 package Model;
 
-import java.util.ArrayList;
+import View.DisplayArea;
+import java.util.Deque;
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
@@ -13,7 +15,8 @@ public class Blackboard {
     private final BlockingQueue<String> eyeTrackingQueue;
     private final BlockingQueue<String> emotionQueue;
     private final Queue<ProcessedDataObject> processedDataQueue;
-    private ArrayList<Circle> circleList;
+    private Deque<Circle> circleList;
+    private DisplayArea displayArea;
 
     private static final Blackboard INSTANCE = new Blackboard();
 
@@ -22,7 +25,8 @@ public class Blackboard {
         eyeTrackingQueue = new LinkedBlockingQueue<>();
         emotionQueue = new LinkedBlockingQueue<>();
         processedDataQueue  = new ConcurrentLinkedQueue<>();
-        circleList = new ArrayList<>();
+        circleList = new ConcurrentLinkedDeque<>();
+        displayArea = new DisplayArea();
     }
 
     // Provide a global point of access to the singleton instance
@@ -54,15 +58,19 @@ public class Blackboard {
         return processedDataQueue.poll();
     }
 
-    public ArrayList<Circle> getCircleList() {
+    public Deque<Circle> getCircleList() {
         return circleList;
     }
 
-    public void setCircleList(ArrayList<Circle> circleList) {
+    public void setCircleList(Deque<Circle> circleList) {
         this.circleList = circleList;
     }
 
     public void addCircleToList(Circle circle){
         circleList.add(circle);
+    }
+
+    public DisplayArea getDisplayArea() {
+        return displayArea;
     }
 }

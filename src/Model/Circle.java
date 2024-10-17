@@ -16,6 +16,25 @@ public class Circle {
         this.color = color;
         this.radius = radius;
     }
+    public int getX() {
+        return xCoord; 
+    }
+
+    public int getY() {
+        return yCoord;
+    }
+
+    public int getRadius() {
+        return radius;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void increaseRadius(int increment) {
+        this.radius += increment;
+    }
 
     /* Implement a function to draw a circle */
 }

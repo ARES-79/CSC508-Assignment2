@@ -1,3 +1,8 @@
+package View;
+
+import Model.Blackboard;
+import Model.Circle;
+import Model.DataProcessor;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,8 +13,8 @@ public class DisplayArea extends JFrame implements Runnable {
 
     private DrawPanel drawPanel;
     //keep tracking radius the same
-    private static final int TRACKING_RADIUS = 50;
-    private static final int CIRCLE_RADIUS = 50;
+    public static final int TRACKING_RADIUS = 50;
+    public static final int CIRCLE_RADIUS = 50;
     private int occupied_x = 0;
     private int occupied_y = 0;
 
@@ -107,7 +112,7 @@ public class DisplayArea extends JFrame implements Runnable {
         // takes in Emotion, x/y
         // NEUTRAL, FOCUS, STRESS, ENGAGEMENT, EXCITEMENT, INTEREST
         // GRAY, YELLOW, RED, BLUE, GREEN, PURPLE
-        public void generateCircle(Emotion e, int x, int y) {
+        public void generateCircle(DataProcessor.Emotion e, int x, int y) {
             // take bundle from DataProcessor and draw circle
             // determine if circle already exists at x/y
             // if already in occupied_x +-50 and occupied_y +-50,
@@ -155,9 +160,10 @@ public class DisplayArea extends JFrame implements Runnable {
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
             System.out.println("paintComponent called");
-            if (color != null) {
-                g.setColor(color);
-                g.fillOval(x, y, radius, radius);
+            for (Circle c : Blackboard.getInstance().getCircleList()) {
+                  g.setColor(c.getColor());
+                  g.fillOval(c.getX() - c.getRadius(), c.getY() - c.getRadius(),
+                             2 * c.getRadius(), 2 * c.getRadius());
             }
         }
     }

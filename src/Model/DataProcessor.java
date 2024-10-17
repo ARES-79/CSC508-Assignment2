@@ -1,12 +1,13 @@
 package Model;
 
+import java.awt.Color;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class DataProcessor implements Runnable{
+public class DataProcessor implements Runnable {
 
     private static final Logger dpLog = Logger.getLogger(DataProcessor.class.getName());
 
@@ -21,7 +22,6 @@ public class DataProcessor implements Runnable{
         EXCITEMENT,
         INTEREST
     }
-
 
     @Override
     public void run() {
@@ -47,6 +47,14 @@ public class DataProcessor implements Runnable{
                         logInvalidEyeTrackingData(eyeTrackingData);
                         continue;
                     }
+                    ProcessedDataObject processedData = new ProcessedDataObject(
+                        coordinates.get(0),
+                        coordinates.get(1),
+                        prominentEmotion,
+                        emotionScores
+                    );
+
+                    Blackboard.getInstance().addToProcessedDataQueue(processedData);
 
                     //TODO: get the prominent emotion and bundle the data together to make a circle
                 } else if (eyeTrackingData != null) {
@@ -56,6 +64,13 @@ public class DataProcessor implements Runnable{
                         continue;
                     }
                     //TODO: bundle the coordinates with a null or blank emotion
+                     ProcessedDataObject processedData = new ProcessedDataObject(
+                           coordinates.get(0),
+                           coordinates.get(1),
+                           Emotion.NEUTRAL,
+                           Arrays.asList(0.2f, 0.2f, 0.2f, 0.2f, 0.2f)
+                     );
+                     Blackboard.getInstance().addToProcessedDataQueue(processedData);
                 } else {
                     // Handle timeout case or missing data
                     dpLog.warning("ProcessingThread: Timed out waiting for data, or one client is slow.");
@@ -93,6 +108,26 @@ public class DataProcessor implements Runnable{
 
     private boolean isValidEmotionData(List<Float> data){
         return data != null && data.stream().allMatch(number -> number >= 0 && number <= 1);
+    }
+
+    private Color getColorFromEmotion(Emotion e){
+        switch(e) {
+         case NEUTRAL:
+            return Color.GRAY;
+         case FOCUS:
+            return Color.YELLOW;
+         case STRESS:
+            return Color.RED;
+         case ENGAGEMENT:
+            return Color.BLUE;
+         case EXCITEMENT:
+            return Color.GREEN;
+         case INTEREST:
+            return Color.MAGENTA;
+         default:
+            // default to black
+            return Color.BLACK;
+         }
     }
 
     // Helper method to convert emotion data to list of comparable floats
