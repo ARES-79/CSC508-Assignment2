@@ -14,6 +14,7 @@ public class EmotionDataServer {
              DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream())) {
 
             while (true) {
+                long startTime = System.currentTimeMillis();
                 float v1 = random.nextFloat();
                 float v2 = random.nextFloat();
                 float v3 = random.nextFloat();
@@ -21,6 +22,8 @@ public class EmotionDataServer {
                 float v5 = random.nextFloat();
                 outputStream.writeUTF(v1 + ", " + v2 + ", " + v3 + ", " + v4 + ", " + v5);
                 outputStream.flush();  // Ensure each packet is sent immediately
+                long endTime = System.currentTimeMillis();
+                System.out.println("Sent emotion data: " + v1 + ", " + v2 + ", " + v3 + ", " + v4 + ", " + v5 + " in " + (endTime - startTime) + "ms");
                 Thread.sleep(500);  // Send data every 0.5 seconds
             }
 

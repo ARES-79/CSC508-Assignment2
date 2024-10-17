@@ -1,10 +1,8 @@
 package DataClients;
 
 import Model.Blackboard;
-
 import java.io.DataInputStream;
 import java.net.Socket;
-import java.util.concurrent.BlockingQueue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,11 +17,12 @@ public class EmotionDataClient implements Runnable {
              DataInputStream inputStream = new DataInputStream(socket.getInputStream())){
 
             while(true){
-                // expecting 5 floats between 0 and 1
-                //0.1023334, 0.321731984, 0.993213, 0.342352, 0.7851349
+                long startTime = System.currentTimeMillis();
                 String str = inputStream.readUTF();
                 Blackboard.getInstance().addToEmotionQueue(str);
-            }
+                long endTime = System.currentTimeMillis();
+                emotionClientLog.info("Received emotion data: " + str + " in " + (endTime - startTime) + "ms");
+               }
 
         } catch (InterruptedException e) {
             emotionClientLog.log(Level.SEVERE, "Thread was interrupted", e);

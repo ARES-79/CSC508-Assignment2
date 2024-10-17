@@ -1,6 +1,5 @@
 package Model;
 
-import java.awt.Color;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
@@ -32,6 +31,7 @@ public class DataProcessor implements Runnable {
                 String emotionData = Blackboard.getInstance().pollEmotionQueue();
 
                 if (eyeTrackingData != null && emotionData != null) {
+                    dpLog.info("ProcessingThread: Processing data pair: " + eyeTrackingData + ", " + emotionData);
                     // Process the pair of data
                     List<Integer> coordinates = convertToIntegerList(eyeTrackingData);
                     List<Float> emotionScores = convertToFloatList(emotionData);
@@ -71,7 +71,15 @@ public class DataProcessor implements Runnable {
                            Arrays.asList(0.2f, 0.2f, 0.2f, 0.2f, 0.2f)
                      );
                      Blackboard.getInstance().addToProcessedDataQueue(processedData);
-                } else {
+                } 
+                // debugging client/server communication
+                else if (eyeTrackingData == null && emotionData != null) {
+                     dpLog.warning("ProcessingThread: Eye-tracking data is missing, but emotion data is present.");
+                }
+                else if (eyeTrackingData != null && emotionData == null) {
+                     dpLog.warning("ProcessingThread: Emotion data is missing, but eye-tracking data is present.");
+                }
+                else {
                     // Handle timeout case or missing data
                     dpLog.warning("ProcessingThread: Timed out waiting for data, or one client is slow.");
                 }
@@ -108,26 +116,6 @@ public class DataProcessor implements Runnable {
 
     private boolean isValidEmotionData(List<Float> data){
         return data != null && data.stream().allMatch(number -> number >= 0 && number <= 1);
-    }
-
-    private Color getColorFromEmotion(Emotion e){
-        switch(e) {
-         case NEUTRAL:
-            return Color.GRAY;
-         case FOCUS:
-            return Color.YELLOW;
-         case STRESS:
-            return Color.RED;
-         case ENGAGEMENT:
-            return Color.BLUE;
-         case EXCITEMENT:
-            return Color.GREEN;
-         case INTEREST:
-            return Color.MAGENTA;
-         default:
-            // default to black
-            return Color.BLACK;
-         }
     }
 
     // Helper method to convert emotion data to list of comparable floats

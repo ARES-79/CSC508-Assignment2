@@ -52,7 +52,6 @@ public class DisplayArea extends JFrame implements Runnable {
         generateMenuItem.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Generate pressed");
-                drawPanel.generateRandomCircle();
             }
         });
         generateMenuItem.setHorizontalAlignment(SwingConstants.CENTER);
@@ -88,27 +87,6 @@ public class DisplayArea extends JFrame implements Runnable {
             System.out.println("DrawPanel created");
         }
 
-        public void generateRandomCircle() {
-            int panelWidth = getWidth();
-            int panelHeight = getHeight();
-
-            if (panelWidth > 0 && panelHeight > 0) {
-                // Random size between 1 and 100
-                radius = random.nextInt(100) + 1;
-
-                x = random.nextInt(panelWidth - radius);
-                y = random.nextInt(panelHeight - radius);
-
-                color = new Color(random.nextInt(256), random.nextInt(256), random.nextInt(256));
-
-                System.out.println("Repainting..."); 
-
-                // usually do not need the entire procedure below but for some reason it is not repainting without
-                invalidate();
-                revalidate();
-                repaint();
-            }
-        }
         // takes in Emotion, x/y
         // NEUTRAL, FOCUS, STRESS, ENGAGEMENT, EXCITEMENT, INTEREST
         // GRAY, YELLOW, RED, BLUE, GREEN, PURPLE
@@ -127,29 +105,6 @@ public class DisplayArea extends JFrame implements Runnable {
                 occupied_y = y;
                 radius = CIRCLE_RADIUS;
             }
-            switch(e) {
-                case NEUTRAL:
-                    color = Color.GRAY;
-                    break;
-                case FOCUS:
-                    color = Color.YELLOW;
-                    break;
-                case STRESS:
-                    color = Color.RED;
-                    break;
-                case ENGAGEMENT:
-                    color = Color.BLUE;
-                    break;
-                case EXCITEMENT:
-                    color = Color.GREEN;
-                    break;
-                case INTEREST:
-                    color = Color.MAGENTA;
-                    break;
-                default:
-                    // default to black
-                    color = Color.BLACK;
-            }
             System.out.println("Repainting...");
             invalidate();
             revalidate();
@@ -159,7 +114,6 @@ public class DisplayArea extends JFrame implements Runnable {
         @Override
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
-            System.out.println("paintComponent called");
             for (Circle c : Blackboard.getInstance().getCircleList()) {
                   g.setColor(c.getColor());
                   g.fillOval(c.getX() - c.getRadius(), c.getY() - c.getRadius(),

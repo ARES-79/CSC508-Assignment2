@@ -1,9 +1,6 @@
 package Model;
 
-import DataClients.EmotionDataClient;
-import DataClients.EyeTrackingClient;
 import View.DrawPanel;
-//import View.DisplayArea;
 import java.util.Deque;
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
@@ -14,7 +11,7 @@ import java.util.concurrent.TimeUnit;
 
 public class Blackboard {
 
-    private static final int TIMEOUT_IN_MS = 200;
+    private static final int TIMEOUT_IN_MS = 500;
     private final BlockingQueue<String> eyeTrackingQueue;
     private final BlockingQueue<String> emotionQueue;
     private final Queue<ProcessedDataObject> processedDataQueue;
@@ -35,14 +32,6 @@ public class Blackboard {
         drawPanel = new DrawPanel();
 
 //        startClients();
-    }
-
-    // Find a way to remove this method
-    public BlockingQueue<String> getEmotionQueue() {
-         return emotionQueue;
-    }
-    public BlockingQueue<String> getEyeTrackingQueue() {
-         return eyeTrackingQueue;
     }
 
     // Provide a global point of access to the singleton instance

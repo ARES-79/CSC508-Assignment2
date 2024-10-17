@@ -1,7 +1,6 @@
 package DataClients;
 
 import Model.Blackboard;
-
 import java.io.DataInputStream;
 import java.net.Socket;
 import java.util.logging.Level;
@@ -18,10 +17,12 @@ public class EyeTrackingClient implements Runnable {
              DataInputStream inputStream = new DataInputStream(socket.getInputStream())){
 
             while(true){
-                // expecting 2 integers
+                long startTime = System.currentTimeMillis();
                 String str = inputStream.readUTF();
                 Blackboard.getInstance().addToEyeTrackingQueue(str);
-            }
+                long endTime = System.currentTimeMillis();
+                eyeTrackingClientLog.info("Received eye tracking data: " + str + " in " + (endTime - startTime) + "ms");
+               }
 
         } catch (InterruptedException e) {
             eyeTrackingClientLog.log(Level.SEVERE, "Thread was interrupted", e);

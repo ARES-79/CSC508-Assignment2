@@ -4,9 +4,8 @@ import Model.Blackboard;
 import Model.DataProcessor;
 import Model.Observer;
 import View.DrawPanel;
-
-import javax.swing.*;
 import java.awt.*;
+import javax.swing.*;
 
 public class AltMain extends JFrame {
 
