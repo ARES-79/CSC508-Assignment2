@@ -20,7 +20,7 @@ public class Main {
        dataThread.start();
        observerThread.start();
 
-       SwingUtilities.invokeLater(blackboard.getDisplayArea());
+//       SwingUtilities.invokeLater(blackboard.getDisplayArea());
 
    }
 }

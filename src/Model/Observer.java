@@ -16,7 +16,8 @@ public class Observer implements Runnable {
                 ProcessedDataObject data = Blackboard.getInstance().getFromProcessedDataObjectQueue();
                 if (data != null) {
                     handleProcessedData(data);
-                    Blackboard.getInstance().getDisplayArea().repaint(); // Trigger repaint
+                    //Blackboard.getInstance().getDisplayArea().repaint(); // Trigger repaint
+                    Blackboard.getInstance().getDrawPanel().repaint();
                 } else {
                     Thread.sleep(200); // Add some sleep to avoid busy waiting
                 }

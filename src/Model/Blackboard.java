@@ -2,7 +2,8 @@ package Model;
 
 import DataClients.EmotionDataClient;
 import DataClients.EyeTrackingClient;
-import View.DisplayArea;
+import View.DrawPanel;
+//import View.DisplayArea;
 import java.util.Deque;
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
@@ -18,7 +19,9 @@ public class Blackboard {
     private final BlockingQueue<String> emotionQueue;
     private final Queue<ProcessedDataObject> processedDataQueue;
     private Deque<Circle> circleList;
-    private DisplayArea displayArea;
+    //private DisplayArea displayArea;
+
+    private DrawPanel drawPanel;
 
     private static final Blackboard INSTANCE = new Blackboard();
 
@@ -28,9 +31,10 @@ public class Blackboard {
         emotionQueue = new LinkedBlockingQueue<>();
         processedDataQueue  = new ConcurrentLinkedQueue<>();
         circleList = new ConcurrentLinkedDeque<>();
-        displayArea = new DisplayArea();
+//        displayArea = new DisplayArea();
+        drawPanel = new DrawPanel();
 
-        startClients();
+//        startClients();
     }
 
     // Find a way to remove this method
@@ -46,16 +50,16 @@ public class Blackboard {
         return INSTANCE;
     }
 
-    private void startClients() {
-      EmotionDataClient emotionDataClient = new EmotionDataClient();
-      Thread emotionThread = new Thread(emotionDataClient);
-
-      EyeTrackingClient eyeTrackingClient = new EyeTrackingClient();
-      Thread eyeTrackingThread = new Thread(eyeTrackingClient);
-
-      emotionThread.start();
-      eyeTrackingThread.start();
-    }
+//    private void startClients() {
+//      EmotionDataClient emotionDataClient = new EmotionDataClient();
+//      Thread emotionThread = new Thread(emotionDataClient);
+//
+//      EyeTrackingClient eyeTrackingClient = new EyeTrackingClient();
+//      Thread eyeTrackingThread = new Thread(eyeTrackingClient);
+//
+//      emotionThread.start();
+//      eyeTrackingThread.start();
+//    }
 
     public void addToEyeTrackingQueue(String data) throws InterruptedException {
         eyeTrackingQueue.put(data);
@@ -93,7 +97,11 @@ public class Blackboard {
         circleList.add(circle);
     }
 
-    public DisplayArea getDisplayArea() {
+    /*public DisplayArea getDisplayArea() {
         return displayArea;
+    }*/
+
+    public DrawPanel getDrawPanel() {
+        return drawPanel;
     }
 }
