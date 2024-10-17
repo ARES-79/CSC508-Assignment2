@@ -15,8 +15,8 @@ public class Blackboard {
     private final BlockingQueue<String> eyeTrackingQueue;
     private final BlockingQueue<String> emotionQueue;
     private final Queue<ProcessedDataObject> processedDataQueue;
+    private boolean startFlag;
     private Deque<Circle> circleList;
-    //private DisplayArea displayArea;
 
     private DrawPanel drawPanel;
 
@@ -28,27 +28,14 @@ public class Blackboard {
         emotionQueue = new LinkedBlockingQueue<>();
         processedDataQueue  = new ConcurrentLinkedQueue<>();
         circleList = new ConcurrentLinkedDeque<>();
-//        displayArea = new DisplayArea();
         drawPanel = new DrawPanel();
-
-//        startClients();
+        startFlag = false;
     }
 
     // Provide a global point of access to the singleton instance
     public static Blackboard getInstance() {
         return INSTANCE;
     }
-
-//    private void startClients() {
-//      EmotionDataClient emotionDataClient = new EmotionDataClient();
-//      Thread emotionThread = new Thread(emotionDataClient);
-//
-//      EyeTrackingClient eyeTrackingClient = new EyeTrackingClient();
-//      Thread eyeTrackingThread = new Thread(eyeTrackingClient);
-//
-//      emotionThread.start();
-//      eyeTrackingThread.start();
-//    }
 
     public void addToEyeTrackingQueue(String data) throws InterruptedException {
         eyeTrackingQueue.put(data);
@@ -86,11 +73,12 @@ public class Blackboard {
         circleList.add(circle);
     }
 
-    /*public DisplayArea getDisplayArea() {
-        return displayArea;
-    }*/
-
     public DrawPanel getDrawPanel() {
         return drawPanel;
     }
+
+    public boolean getStartFlag(){return startFlag;}
+    public void startDataRetrieval(){startFlag = true;}
+
+    public void stopDataRetrieval(){startFlag = false;}
 }

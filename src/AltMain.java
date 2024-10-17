@@ -1,3 +1,4 @@
+import Controller.MainController;
 import DataClients.EmotionDataClient;
 import DataClients.EyeTrackingClient;
 import Model.Blackboard;
@@ -37,6 +38,10 @@ public class AltMain extends JFrame {
         actionsMenu.add(start);
         actionsMenu.add(stop);
         setJMenuBar(menuBar);
+
+        MainController controller = new MainController();
+        start.addActionListener(controller);
+        stop.addActionListener(controller);
 
         DrawPanel drawPanel = Blackboard.getInstance().getDrawPanel();
         add(drawPanel, BorderLayout.CENTER);

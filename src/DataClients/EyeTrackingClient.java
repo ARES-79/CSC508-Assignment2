@@ -17,12 +17,15 @@ public class EyeTrackingClient implements Runnable {
              DataInputStream inputStream = new DataInputStream(socket.getInputStream())){
 
             while(true){
-                long startTime = System.currentTimeMillis();
-                String str = inputStream.readUTF();
-                Blackboard.getInstance().addToEyeTrackingQueue(str);
-                long endTime = System.currentTimeMillis();
-                eyeTrackingClientLog.info("Received eye tracking data: " + str + " in " + (endTime - startTime) + "ms");
-               }
+                while(Blackboard.getInstance().getStartFlag()){
+                    long startTime = System.currentTimeMillis();
+                    String str = inputStream.readUTF();
+                    Blackboard.getInstance().addToEyeTrackingQueue(str);
+                    long endTime = System.currentTimeMillis();
+                    eyeTrackingClientLog.info("Received eye tracking data: " + str + " in " + (endTime - startTime) + "ms");
+                }
+                Thread.sleep(500);
+            }
 
         } catch (InterruptedException e) {
             eyeTrackingClientLog.log(Level.SEVERE, "Thread was interrupted", e);

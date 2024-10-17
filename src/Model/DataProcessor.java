@@ -26,63 +26,46 @@ public class DataProcessor implements Runnable {
     public void run() {
         try {
             while (true) {
-                // Poll with a timeout to prevent blocking indefinitely
-                String eyeTrackingData = Blackboard.getInstance().pollEyeTrackingQueue();
-                String emotionData = Blackboard.getInstance().pollEmotionQueue();
+                while (Blackboard.getInstance().getStartFlag()){
+                    // Poll with a timeout to prevent blocking indefinitely
+                    String eyeTrackingData = Blackboard.getInstance().pollEyeTrackingQueue();
+                    String emotionData = Blackboard.getInstance().pollEmotionQueue();
 
-                if (eyeTrackingData != null && emotionData != null) {
-                    dpLog.info("ProcessingThread: Processing data pair: " + eyeTrackingData + ", " + emotionData);
-                    // Process the pair of data
-                    List<Integer> coordinates = convertToIntegerList(eyeTrackingData);
-                    List<Float> emotionScores = convertToFloatList(emotionData);
-                    Emotion prominentEmotion;
-                    //if the emotion data is invalid, use neutral
-                    if(!isValidEmotionData(emotionScores)){
-                        logInvalidEmotionData(emotionData);
-                        prominentEmotion = Emotion.NEUTRAL;
+                    if (eyeTrackingData != null) {
+                        dpLog.info("ProcessingThread: Processing data pair: " + eyeTrackingData + ", " + emotionData);
+                        // Process the pair of data
+                        List<Integer> coordinates = convertToIntegerList(eyeTrackingData);
+                        List<Float> emotionScores = convertToFloatList(emotionData);
+                        Emotion prominentEmotion;
+                        //if the emotion data is invalid, use neutral
+                        if (!isValidEmotionData(emotionScores)) {
+                            logInvalidEmotionData(emotionData);
+                            prominentEmotion = Emotion.NEUTRAL;
+                        } else {
+                            prominentEmotion = getProminentEmotion(emotionScores);
+                        }
+                        if (!isValidEyeTrackingData(coordinates)) {
+                            logInvalidEyeTrackingData(eyeTrackingData);
+                            continue;
+                        }
+                        ProcessedDataObject processedData = new ProcessedDataObject(
+                                coordinates.get(0),
+                                coordinates.get(1),
+                                prominentEmotion,
+                                emotionScores
+                        );
+
+                        Blackboard.getInstance().addToProcessedDataQueue(processedData);
+                    }
+                    // debugging client/server communication
+                    else if (emotionData != null) {
+                        dpLog.warning("ProcessingThread: Eye-tracking data is missing, but emotion data is present.");
                     } else {
-                        prominentEmotion = getProminentEmotion(emotionScores);
+                        // Handle timeout case or missing data
+                        dpLog.warning("ProcessingThread: Timed out waiting for data, or one client is slow.");
                     }
-                    if(!isValidEyeTrackingData(coordinates)){
-                        logInvalidEyeTrackingData(eyeTrackingData);
-                        continue;
-                    }
-                    ProcessedDataObject processedData = new ProcessedDataObject(
-                        coordinates.get(0),
-                        coordinates.get(1),
-                        prominentEmotion,
-                        emotionScores
-                    );
-
-                    Blackboard.getInstance().addToProcessedDataQueue(processedData);
-
-                    //TODO: get the prominent emotion and bundle the data together to make a circle
-                } else if (eyeTrackingData != null) {
-                    List<Integer> coordinates = convertToIntegerList(eyeTrackingData);
-                    if(!isValidEyeTrackingData(coordinates)){
-                        logInvalidEyeTrackingData(eyeTrackingData);
-                        continue;
-                    }
-                    //TODO: bundle the coordinates with a null or blank emotion
-                     ProcessedDataObject processedData = new ProcessedDataObject(
-                           coordinates.get(0),
-                           coordinates.get(1),
-                           Emotion.NEUTRAL,
-                           Arrays.asList(0.2f, 0.2f, 0.2f, 0.2f, 0.2f)
-                     );
-                     Blackboard.getInstance().addToProcessedDataQueue(processedData);
-                } 
-                // debugging client/server communication
-                else if (eyeTrackingData == null && emotionData != null) {
-                     dpLog.warning("ProcessingThread: Eye-tracking data is missing, but emotion data is present.");
                 }
-                else if (eyeTrackingData != null && emotionData == null) {
-                     dpLog.warning("ProcessingThread: Emotion data is missing, but eye-tracking data is present.");
-                }
-                else {
-                    // Handle timeout case or missing data
-                    dpLog.warning("ProcessingThread: Timed out waiting for data, or one client is slow.");
-                }
+                Thread.sleep(500);
             }
         } catch (InterruptedException e) {
             dpLog.log(Level.SEVERE, "Thread was interrupted", e);

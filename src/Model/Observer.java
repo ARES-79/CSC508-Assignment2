@@ -13,14 +13,18 @@ public class Observer implements Runnable {
     public void run() {
         try {
             while (true) {
-                ProcessedDataObject data = Blackboard.getInstance().getFromProcessedDataObjectQueue();
-                if (data != null) {
-                    handleProcessedData(data);
-                    //Blackboard.getInstance().getDisplayArea().repaint(); // Trigger repaint
-                    Blackboard.getInstance().getDrawPanel().repaint();
-                } else {
-                    Thread.sleep(200); // Add some sleep to avoid busy waiting
+                while (Blackboard.getInstance().getStartFlag()) {
+                    ProcessedDataObject data = Blackboard.getInstance().getFromProcessedDataObjectQueue();
+                    System.out.println("retrieved processed data: " + data);
+                    if (data != null) {
+                        handleProcessedData(data);
+                        //Blackboard.getInstance().getDisplayArea().repaint(); // Trigger repaint
+                        Blackboard.getInstance().getDrawPanel().repaint();
+                    } else {
+                        Thread.sleep(200); // Add some sleep to avoid busy waiting
+                    }
                 }
+                Thread.sleep(500);
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();

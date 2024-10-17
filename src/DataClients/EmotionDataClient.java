@@ -17,12 +17,15 @@ public class EmotionDataClient implements Runnable {
              DataInputStream inputStream = new DataInputStream(socket.getInputStream())){
 
             while(true){
-                long startTime = System.currentTimeMillis();
-                String str = inputStream.readUTF();
-                Blackboard.getInstance().addToEmotionQueue(str);
-                long endTime = System.currentTimeMillis();
-                emotionClientLog.info("Received emotion data: " + str + " in " + (endTime - startTime) + "ms");
-               }
+                while (Blackboard.getInstance().getStartFlag()){
+                    long startTime = System.currentTimeMillis();
+                    String str = inputStream.readUTF();
+                    Blackboard.getInstance().addToEmotionQueue(str);
+                    long endTime = System.currentTimeMillis();
+                    emotionClientLog.info("Received emotion data: " + str + " in " + (endTime - startTime) + "ms");
+                }
+                Thread.sleep(500);
+            }
 
         } catch (InterruptedException e) {
             emotionClientLog.log(Level.SEVERE, "Thread was interrupted", e);
