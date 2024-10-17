@@ -5,7 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Random;
 
-public class EmotionDataServer {
+public class EmotionDataServer implements Runnable{
 
     public static void main(String[] args) {
         Random random = new Random();
@@ -30,5 +30,10 @@ public class EmotionDataServer {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    @Override
+    public void run() {
+        main(new String[0]);
     }
 }
