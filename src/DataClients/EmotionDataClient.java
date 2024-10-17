@@ -1,5 +1,7 @@
 package DataClients;
 
+import Model.Blackboard;
+
 import java.io.DataInputStream;
 import java.net.Socket;
 import java.util.concurrent.BlockingQueue;
@@ -9,12 +11,7 @@ import java.util.logging.Logger;
 public class EmotionDataClient implements Runnable {
     private static final String IP_ADDRESS = "localhost";
     private static final int PORT = 6000;
-    private final BlockingQueue<String> emotionQueue;
     private static final Logger emotionClientLog = Logger.getLogger(EmotionDataClient.class.getName());
-
-    public EmotionDataClient(BlockingQueue<String> queue) {
-        this.emotionQueue = queue;
-    }
 
     @Override
     public void run() {
@@ -25,7 +22,7 @@ public class EmotionDataClient implements Runnable {
                 // expecting 5 floats between 0 and 1
                 //0.1023334, 0.321731984, 0.993213, 0.342352, 0.7851349
                 String str = inputStream.readUTF();
-                emotionQueue.put(str);
+                Blackboard.getInstance().addToEmotionQueue(str);
             }
 
         } catch (InterruptedException e) {
