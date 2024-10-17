@@ -7,24 +7,22 @@ import java.util.Random;
 
 public class EyeTrackingServer {
 
-    public static void main(String[] args){
-        java.util.Random random = new Random();
-        try(ServerSocket ss = new ServerSocket(6001);
-            Socket connection = ss.accept();
-            DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());){
-            int i = 0;
-            while(true){
+    public static void main(String[] args) {
+        Random random = new Random();
+        try (ServerSocket ss = new ServerSocket(6001);
+             Socket connection = ss.accept();
+             DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream())) {
+
+            while (true) {
                 int x_pos = random.nextInt(1000);
                 int y_pos = random.nextInt(1000);
                 outputStream.writeUTF(x_pos + ", " + y_pos);
-                if (i % 5 == 0){
-                    outputStream.flush();
-                }
-                Thread.sleep(500);
-                i++;
+                outputStream.flush();  // Ensure each packet is sent immediately
+                Thread.sleep(500);  // Send data every 0.5 seconds
             }
-//            outputStream.close();
-//            connection.close();
-        } catch (Exception e){System.out.println(e.getMessage());}
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

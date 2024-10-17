@@ -1,5 +1,7 @@
 package Model;
 
+import DataClients.EmotionDataClient;
+import DataClients.EyeTrackingClient;
 import View.DisplayArea;
 import java.util.Deque;
 import java.util.Queue;
@@ -27,11 +29,32 @@ public class Blackboard {
         processedDataQueue  = new ConcurrentLinkedQueue<>();
         circleList = new ConcurrentLinkedDeque<>();
         displayArea = new DisplayArea();
+
+        startClients();
+    }
+
+    // Find a way to remove this method
+    public BlockingQueue<String> getEmotionQueue() {
+         return emotionQueue;
+    }
+    public BlockingQueue<String> getEyeTrackingQueue() {
+         return eyeTrackingQueue;
     }
 
     // Provide a global point of access to the singleton instance
     public static Blackboard getInstance() {
         return INSTANCE;
+    }
+
+    private void startClients() {
+      EmotionDataClient emotionDataClient = new EmotionDataClient(emotionQueue);
+      Thread emotionThread = new Thread(emotionDataClient);
+
+      EyeTrackingClient eyeTrackingClient = new EyeTrackingClient(eyeTrackingQueue);
+      Thread eyeTrackingThread = new Thread(eyeTrackingClient);
+
+      emotionThread.start();
+      eyeTrackingThread.start();
     }
 
     public void addToEyeTrackingQueue(String data) throws InterruptedException {
