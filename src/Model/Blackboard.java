@@ -47,10 +47,10 @@ public class Blackboard {
     }
 
     private void startClients() {
-      EmotionDataClient emotionDataClient = new EmotionDataClient(emotionQueue);
+      EmotionDataClient emotionDataClient = new EmotionDataClient();
       Thread emotionThread = new Thread(emotionDataClient);
 
-      EyeTrackingClient eyeTrackingClient = new EyeTrackingClient(eyeTrackingQueue);
+      EyeTrackingClient eyeTrackingClient = new EyeTrackingClient();
       Thread eyeTrackingThread = new Thread(eyeTrackingClient);
 
       emotionThread.start();
