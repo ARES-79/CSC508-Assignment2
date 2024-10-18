@@ -10,18 +10,6 @@ public class DataProcessor implements Runnable {
 
     private static final Logger dpLog = Logger.getLogger(DataProcessor.class.getName());
 
-    private static final Emotion[] emotionValues = Emotion.values();
-
-
-    public enum Emotion{
-        NEUTRAL,
-        FOCUS,
-        STRESS,
-        ENGAGEMENT,
-        EXCITEMENT,
-        INTEREST
-    }
-
     @Override
     public void run() {
         try {
@@ -42,12 +30,12 @@ public class DataProcessor implements Runnable {
                             //if the emotion data is invalid, use neutral
                             if (!isValidEmotionData(emotionScores)) {
                                 logInvalidEmotionData(emotionData);
-                                prominentEmotion = Emotion.NEUTRAL;
+                                prominentEmotion = Emotion.NONE;
                             } else {
                                 prominentEmotion = getProminentEmotion(emotionScores);
                             }
                         } else {
-                            prominentEmotion = Emotion.NEUTRAL;
+                            prominentEmotion = Emotion.NONE;
                         }
 
                         if (!isValidEyeTrackingData(coordinates)) {
@@ -134,7 +122,7 @@ public class DataProcessor implements Runnable {
             }
         }
 
-        return emotionValues[maxIndex + 1];
+        return Emotion.getByValue(maxIndex);
     }
 
     private void logInvalidEmotionData(String data){

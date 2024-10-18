@@ -2,7 +2,8 @@ package View;
 
 import Model.Blackboard;
 import Model.Circle;
-import Model.DataProcessor;
+import Model.Emotion;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -90,7 +91,7 @@ public class DisplayArea extends JFrame implements Runnable {
         // takes in Emotion, x/y
         // NEUTRAL, FOCUS, STRESS, ENGAGEMENT, EXCITEMENT, INTEREST
         // GRAY, YELLOW, RED, BLUE, GREEN, PURPLE
-        public void generateCircle(DataProcessor.Emotion e, int x, int y) {
+        public void generateCircle(Emotion e, int x, int y) {
             // take bundle from DataProcessor and draw circle
             // determine if circle already exists at x/y
             // if already in occupied_x +-50 and occupied_y +-50,

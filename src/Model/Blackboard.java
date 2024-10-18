@@ -1,6 +1,7 @@
 package Model;
 
 import View.DrawPanel;
+
 import java.util.Deque;
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
@@ -11,13 +12,24 @@ import java.util.concurrent.TimeUnit;
 
 public class Blackboard {
 
-    private static final int TIMEOUT_IN_MS = 500;
+    // EYE TRACKING DATA
+    private String eyeTrackingSocket_Host = "localhost";  // default for testing
+    private String eyeTrackingSocket_Port = "6001";  // default for testing
     private final BlockingQueue<String> eyeTrackingQueue;
-    private final BlockingQueue<String> emotionQueue;
-    private final Queue<ProcessedDataObject> processedDataQueue;
-    private boolean startFlag;
-    private Deque<Circle> circleList;
 
+    // EMOTION TRACKING DATA
+    private String emotionSocket_Host = "localhost"; // default for testing
+    private String emotionSocket_Port = "6000"; // default for testing
+    private final BlockingQueue<String> emotionQueue;
+
+    private static final int TIMEOUT_IN_MS = 500;
+    //COMBINED DATA
+    private final Queue<ProcessedDataObject> processedDataQueue;
+    //TODO - remove the need for start flag
+    private boolean startFlag;
+    //TODO - remove circleList from here
+    private Deque<Circle> circleList;
+    //TODO - remove the need for stored DrawPanel
     private DrawPanel drawPanel;
 
     private static final Blackboard INSTANCE = new Blackboard();
@@ -81,4 +93,37 @@ public class Blackboard {
     public void startDataRetrieval(){startFlag = true;}
 
     public void stopDataRetrieval(){startFlag = false;}
+
+    public String getEyeTrackingSocket_Host() {
+        return eyeTrackingSocket_Host;
+    }
+
+    public String getEyeTrackingSocket_Port() {
+        return eyeTrackingSocket_Port;
+    }
+
+    public String getEmotionSocket_Host() {
+        return emotionSocket_Host;
+    }
+
+    public String getEmotionSocket_Port() {
+        return emotionSocket_Port;
+    }
+
+    public void setEyeTrackingSocket_Host(String eyeTrackingSocket_Host) {
+        this.eyeTrackingSocket_Host = eyeTrackingSocket_Host;
+    }
+
+    public void setEyeTrackingSocket_Port(String eyeTrackingSocket_Port) {
+        this.eyeTrackingSocket_Port = eyeTrackingSocket_Port;
+    }
+
+    public void setEmotionSocket_Host(String emotionSocket_Host) {
+        this.emotionSocket_Host = emotionSocket_Host;
+    }
+
+    public void setEmotionSocket_Port(String emotionSocket_Port) {
+        this.emotionSocket_Port = emotionSocket_Port;
+    }
+
 }

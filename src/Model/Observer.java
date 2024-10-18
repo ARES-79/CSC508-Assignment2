@@ -33,7 +33,7 @@ public class Observer implements Runnable {
 
     private void handleProcessedData(ProcessedDataObject data) {
         Deque<Circle> circleList = Blackboard.getInstance().getCircleList();
-        Color circleColor = getColorFromEmotion(data.prominentEmotion());
+        Color circleColor = data.prominentEmotion().getColor();
         Circle newCircle = new Circle(data.xCoord(), data.yCoord(), circleColor, DisplayArea.CIRCLE_RADIUS);
 
         // Check if the new circle is within the threshold of any existing circle
@@ -64,15 +64,4 @@ public class Observer implements Runnable {
         return distance <= THRESHOLD_RADIUS;
     }
 
-    private Color getColorFromEmotion(DataProcessor.Emotion emotion) {
-        switch (emotion) {
-            case NEUTRAL: return Color.GRAY;
-            case FOCUS: return Color.YELLOW;
-            case STRESS: return Color.RED;
-            case ENGAGEMENT: return Color.BLUE;
-            case EXCITEMENT: return Color.GREEN;
-            case INTEREST: return Color.MAGENTA;
-            default: return Color.BLACK;
-        }
-    }
 }

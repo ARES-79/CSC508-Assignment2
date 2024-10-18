@@ -1,3 +1,5 @@
+package View;
+
 import Model.Blackboard;
 import Model.DataProcessor;
 import Model.Observer;
