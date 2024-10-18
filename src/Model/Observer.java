@@ -1,13 +1,15 @@
 package Model;
 
 import View.DisplayArea;
-import java.awt.Color;
+import java.awt.*;
 import java.util.Deque;
+import javax.swing.JTextArea;
 
 public class Observer implements Runnable {
 
     private static final int MAX_CIRCLES = 5; // FIFO size limit
     private static final int THRESHOLD_RADIUS = 50; // Radius threshold for consolidation
+    private static final Font font = new Font("Dialog", Font.PLAIN, 10);
 
     @Override
     public void run() {
@@ -21,7 +23,7 @@ public class Observer implements Runnable {
                         //Blackboard.getInstance().getDisplayArea().repaint(); // Trigger repaint
                         Blackboard.getInstance().getDrawPanel().repaint();
                     } else {
-                        Thread.sleep(200); // Add some sleep to avoid busy waiting
+                        Thread.sleep(100); // Add some sleep to avoid busy waiting
                     }
                 }
                 Thread.sleep(500);
@@ -34,7 +36,10 @@ public class Observer implements Runnable {
     private void handleProcessedData(ProcessedDataObject data) {
         Deque<Circle> circleList = Blackboard.getInstance().getCircleList();
         Color circleColor = getColorFromEmotion(data.prominentEmotion());
-        Circle newCircle = new Circle(data.xCoord(), data.yCoord(), circleColor, DisplayArea.CIRCLE_RADIUS);
+        //if (createLabel) {}
+        JTextArea label = createLabelFromData(data);
+        Circle newCircle = new Circle(data.xCoord(), data.yCoord(), circleColor, DisplayArea.CIRCLE_RADIUS, label);
+        ///Circle newCircle = new Circle(data.xCoord(), data.yCoord(), circleColor, DisplayArea.CIRCLE_RADIUS);
 
         // Check if the new circle is within the threshold of any existing circle
         boolean consolidated = false;
@@ -49,12 +54,29 @@ public class Observer implements Runnable {
         if (!consolidated) {
             // If the list is full, remove the oldest entry
             if (circleList.size() == MAX_CIRCLES) {
+                JTextArea labelToRemove = circleList.peekFirst().getLabel();
+                if (labelToRemove != null) {
+                   Blackboard.getInstance().getDrawPanel().remove(labelToRemove);
+                }
                 circleList.pollFirst();
             }
             circleList.addLast(newCircle); // Add the new circle
         }
 
         Blackboard.getInstance().setCircleList(circleList);
+    }
+
+    private JTextArea createLabelFromData(ProcessedDataObject data) {
+         JTextArea label = new JTextArea();
+         Color circleColor = getColorFromEmotion(data.prominentEmotion());
+         label.setText(String.valueOf(circleColor.getRGB()));
+         label.setEditable(false);
+         label.setForeground(Color.WHITE);
+         label.setBackground(circleColor);
+         label.setAlignmentX(0.5f); //center alignment
+         label.setFont(font);
+         label.setBounds(data.xCoord() - 25,data.yCoord() - 5,25,10);
+         return label;
     }
 
     private boolean isWithinThreshold(Circle existing, Circle newCircle) {

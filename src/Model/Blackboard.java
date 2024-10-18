@@ -29,7 +29,7 @@ public class Blackboard {
         processedDataQueue  = new ConcurrentLinkedQueue<>();
         circleList = new ConcurrentLinkedDeque<>();
         drawPanel = new DrawPanel();
-        startFlag = false;
+        startFlag = true;
     }
 
     // Provide a global point of access to the singleton instance
