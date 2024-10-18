@@ -2,14 +2,12 @@ package View;
 
 import Controller.MainController;
 import DataClients.*;
-import Model.Alt_DataProcessor;
-import Model.Blackboard;
-import Model.DataProcessor;
-import Model.Observer;
+import Model.*;
 import TestServers.EmotionDataServer;
 import TestServers.EyeTrackingServer;
 
 import java.awt.*;
+import java.beans.PropertyChangeListener;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Socket;
@@ -91,14 +89,17 @@ public class AltMain extends JFrame {
                                                 Blackboard.getInstance().getEmotionSocket_Host(),
                                                 emotionPort);
         CustomThread dataProcessor = new Alt_DataProcessor();
+        DrawPanelDelegate dpDelegate = new DrawPanelDelegate();
 
         threads.add(eyeTrackingThread);
         threads.add(emotionThread);
         threads.add(dataProcessor);
+        threads.add(dpDelegate);
+        Blackboard.getInstance().addProcessedDataListener(dpDelegate);
         for (CustomThread thread : threads){thread.start();}
 
-        Thread observerThread = new Thread(new Observer());
-        observerThread.start();
+//        Thread observerThread = new Thread(new Observer());
+//        observerThread.start();
 
     }
 

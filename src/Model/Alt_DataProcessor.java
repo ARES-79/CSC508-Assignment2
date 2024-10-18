@@ -66,7 +66,7 @@ public class Alt_DataProcessor extends CustomThread {
 
     @Override
     public void cleanUpThread() {
-
+        //noting needed
     }
 
     private boolean isValidEyeTrackingData(List<Integer> data){

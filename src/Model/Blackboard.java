@@ -2,6 +2,8 @@ package Model;
 
 import View.DrawPanel;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.Deque;
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
@@ -22,9 +24,13 @@ public class Blackboard {
     private String emotionSocket_Port = "6000"; // default for testing
     private final BlockingQueue<String> emotionQueue;
 
-    private static final int TIMEOUT_IN_MS = 500;
     //COMBINED DATA
     private final Queue<ProcessedDataObject> processedDataQueue;
+    private final PropertyChangeSupport processedDataSupport = new PropertyChangeSupport(this);
+
+
+    private static final int TIMEOUT_IN_MS = 500;
+
     //TODO - remove the need for start flag
     private boolean startFlag;
     //TODO - remove circleList from here
@@ -36,6 +42,7 @@ public class Blackboard {
 
     // Private constructor to prevent instantiation from other classes
     private Blackboard() {
+        super();
         eyeTrackingQueue = new LinkedBlockingQueue<>();
         emotionQueue = new LinkedBlockingQueue<>();
         processedDataQueue  = new ConcurrentLinkedQueue<>();
@@ -67,6 +74,7 @@ public class Blackboard {
 
     public void addToProcessedDataQueue(ProcessedDataObject data){
         processedDataQueue.add(data);
+        processedDataSupport.firePropertyChange("processedDataQueue", null, null);
     }
 
     public ProcessedDataObject getFromProcessedDataObjectQueue(){
@@ -126,4 +134,11 @@ public class Blackboard {
         this.emotionSocket_Port = emotionSocket_Port;
     }
 
+    public void addProcessedDataListener(PropertyChangeListener pcl) {
+        processedDataSupport.addPropertyChangeListener(pcl);
+    }
+
+    public void removeProcessedDataListener(PropertyChangeListener pcl) {
+        processedDataSupport.removePropertyChangeListener(pcl);
+    }
 }
