@@ -1,7 +1,5 @@
 package Model;
 
-import View.DrawPanel;
-
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Deque;
@@ -26,17 +24,15 @@ public class Blackboard {
 
     //COMBINED DATA
     private final Queue<ProcessedDataObject> processedDataQueue;
-    private final PropertyChangeSupport processedDataSupport = new PropertyChangeSupport(this);
+    public static final String PROPERTY_NAME_PROCESSED_DATA = "processed data";
+    private final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
 
-
-    private static final int TIMEOUT_IN_MS = 500;
-
-    //TODO - remove the need for start flag
-    private boolean startFlag;
-    //TODO - remove circleList from here
+    //VIEW DATA
+    public static final String PROPERTY_NAME_VIEW_DATA = "view data";
     private Deque<Circle> circleList;
-    //TODO - remove the need for stored DrawPanel
-    private DrawPanel drawPanel;
+
+    //MISC
+    private static final int TIMEOUT_IN_MS = 500;
 
     private static final Blackboard INSTANCE = new Blackboard();
 
@@ -47,8 +43,6 @@ public class Blackboard {
         emotionQueue = new LinkedBlockingQueue<>();
         processedDataQueue  = new ConcurrentLinkedQueue<>();
         circleList = new ConcurrentLinkedDeque<>();
-        drawPanel = new DrawPanel();
-        startFlag = false;
     }
 
     // Provide a global point of access to the singleton instance
@@ -74,7 +68,7 @@ public class Blackboard {
 
     public void addToProcessedDataQueue(ProcessedDataObject data){
         processedDataQueue.add(data);
-        processedDataSupport.firePropertyChange("processedDataQueue", null, null);
+        changeSupport.firePropertyChange(PROPERTY_NAME_PROCESSED_DATA, null, null);
     }
 
     public ProcessedDataObject getFromProcessedDataObjectQueue(){
@@ -87,20 +81,9 @@ public class Blackboard {
 
     public void setCircleList(Deque<Circle> circleList) {
         this.circleList = circleList;
+        changeSupport.firePropertyChange(PROPERTY_NAME_VIEW_DATA, null, null);
     }
 
-    public void addCircleToList(Circle circle){
-        circleList.add(circle);
-    }
-
-    public DrawPanel getDrawPanel() {
-        return drawPanel;
-    }
-
-    public boolean getStartFlag(){return startFlag;}
-    public void startDataRetrieval(){startFlag = true;}
-
-    public void stopDataRetrieval(){startFlag = false;}
 
     public String getEyeTrackingSocket_Host() {
         return eyeTrackingSocket_Host;
@@ -134,11 +117,11 @@ public class Blackboard {
         this.emotionSocket_Port = emotionSocket_Port;
     }
 
-    public void addProcessedDataListener(PropertyChangeListener pcl) {
-        processedDataSupport.addPropertyChangeListener(pcl);
+    public void addChangeSupportListener(String propertyName, PropertyChangeListener pcl) {
+        changeSupport.addPropertyChangeListener(propertyName, pcl);
     }
 
-    public void removeProcessedDataListener(PropertyChangeListener pcl) {
-        processedDataSupport.removePropertyChangeListener(pcl);
+    public void removePropertyChangeListener(String propertyName, PropertyChangeListener pcl) {
+        changeSupport.removePropertyChangeListener(propertyName, pcl);
     }
 }

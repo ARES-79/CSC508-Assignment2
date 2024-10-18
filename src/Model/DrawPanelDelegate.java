@@ -3,7 +3,6 @@ package Model;
 import DataClients.CustomThread;
 import View.DisplayArea;
 
-import javax.sound.midi.SysexMessage;
 import java.awt.*;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -15,12 +14,13 @@ public class DrawPanelDelegate extends CustomThread implements PropertyChangeLis
 
     private static final int MAX_CIRCLES = 5; // FIFO size limit
     private static final int THRESHOLD_RADIUS = 50; // Radius threshold for consolidation
-
     private static final String THREAD_NAME = "ViewLogic";
     public DrawPanelDelegate(){
         super();
         super.setLog(Logger.getLogger(DrawPanelDelegate.class.getName()));
         super.setName(THREAD_NAME);
+        Blackboard.getInstance().addChangeSupportListener(
+                Blackboard.PROPERTY_NAME_PROCESSED_DATA, this);
     }
 
     @Override
@@ -33,7 +33,8 @@ public class DrawPanelDelegate extends CustomThread implements PropertyChangeLis
 
     @Override
     public void cleanUpThread() {
-        //noting needed
+        Blackboard.getInstance().removePropertyChangeListener(
+                Blackboard.PROPERTY_NAME_PROCESSED_DATA, this);
     }
 
     private void handleProcessedData(ProcessedDataObject data) {
@@ -71,14 +72,10 @@ public class DrawPanelDelegate extends CustomThread implements PropertyChangeLis
 
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
-        System.out.println("PROPERTY CHANGE EVENT: " + evt.getPropertyName());
-        if (evt.getPropertyName().equals("processedDataQueue")) {
-            ProcessedDataObject data = Blackboard.getInstance().getFromProcessedDataObjectQueue();
-            System.out.println("retrieved processed data: " + data);
-            if (data != null) {
-                handleProcessedData(data);
-                Blackboard.getInstance().getDrawPanel().repaint();
-            }
+        ProcessedDataObject data = Blackboard.getInstance().getFromProcessedDataObjectQueue();
+        System.out.println("retrieved processed data: " + data);
+        if (data != null) {
+            handleProcessedData(data);
         }
     }
 }

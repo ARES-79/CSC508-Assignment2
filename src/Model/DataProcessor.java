@@ -12,7 +12,7 @@ public class DataProcessor implements Runnable {
 
     @Override
     public void run() {
-        try {
+        /*try {
             while (true) {
                 while (Blackboard.getInstance().getStartFlag()){
                     // Poll with a timeout to prevent blocking indefinitely
@@ -67,7 +67,7 @@ public class DataProcessor implements Runnable {
             Thread.currentThread().interrupt();
         } catch(Exception e){
             dpLog.warning(e.toString());
-        }
+        }*/
     }
 
     private boolean isValidEyeTrackingData(List<Integer> data){

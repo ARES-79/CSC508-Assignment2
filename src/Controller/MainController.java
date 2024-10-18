@@ -35,17 +35,16 @@ public class MainController implements ActionListener {
                 } catch (NumberFormatException exception) {
                     controllerLog.warning("Invalid Ports.");
                     JOptionPane.showMessageDialog(parent, "Invalid Ports - ports must be integers.");
-                } catch (IOException ex) {
+                }
+                /*catch (IOException ex) {
                     controllerLog.warning("Unable to connect to servers.");
                     JOptionPane.showMessageDialog(parent, "Unable to connect to servers.");
-                }
-                //TODO: get rid of this later
-                Blackboard.getInstance().startDataRetrieval();
+                }*/
+
             }
             case ("Stop") -> {
                 controllerLog.info("Stop Pressed. Disconnecting.");
                 parent.cleanUpThreads();
-                Blackboard.getInstance().stopDataRetrieval();
             }
         }
     }

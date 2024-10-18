@@ -51,36 +51,21 @@ public class AltMain extends JFrame {
         start.addActionListener(controller);
         stop.addActionListener(controller);
 
-        DrawPanel drawPanel = Blackboard.getInstance().getDrawPanel();
+        DrawPanel drawPanel = new DrawPanel();
         add(drawPanel, BorderLayout.CENTER);
-    }
-
-    private void startAllThreads() {
-
-        Thread emotionThread = new Thread(new EmotionDataClient());
-        Thread eyeTrackingThread = new Thread(new EyeTrackingClient());
-        Thread dataThread = new Thread(new Alt_DataProcessor());
-        Thread observerThread = new Thread(new Observer());
-
-        emotionThread.start();
-        eyeTrackingThread.start();
-        dataThread.start();
-        observerThread.start();
     }
 
     /**
      * Function to be called when the user presses "Start".
-     * Closes all previous connections if present and attempts to connect to the
-     * IP addresses in blackboard.
-     * <p>
-     * Allows process to continue if the Emotion client is unsuccessful, but not if the
-     * Eye Tracking client is unsuccessful
+     * Closes all previous connections if present.
+     * Attempts to connect to the sever IP addresses in blackboard.
+     * Creates and starts all necessary threads.
      *
-     * @param eyeTrackingPort
-     * @param emotionPort
-     * @throws IOException
+     *
+     * @param eyeTrackingPort port for IP of eye tracking server as int
+     * @param emotionPort port for IP of emotion server as int
      */
-    public void connectClients(int eyeTrackingPort, int emotionPort) throws IOException {
+    public void connectClients(int eyeTrackingPort, int emotionPort) {
         cleanUpThreads();
         CustomThread eyeTrackingThread = new Alt_EyeTrackingClient(
                                                 Blackboard.getInstance().getEyeTrackingSocket_Host(),
@@ -95,12 +80,7 @@ public class AltMain extends JFrame {
         threads.add(emotionThread);
         threads.add(dataProcessor);
         threads.add(dpDelegate);
-        Blackboard.getInstance().addProcessedDataListener(dpDelegate);
         for (CustomThread thread : threads){thread.start();}
-
-//        Thread observerThread = new Thread(new Observer());
-//        observerThread.start();
-
     }
 
     public void cleanUpThreads(){

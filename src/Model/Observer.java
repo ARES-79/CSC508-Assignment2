@@ -11,7 +11,7 @@ public class Observer implements Runnable {
 
     @Override
     public void run() {
-        try {
+        /*try {
             while (true) {
                 while (Blackboard.getInstance().getStartFlag()) {
                     ProcessedDataObject data = Blackboard.getInstance().getFromProcessedDataObjectQueue();
@@ -28,7 +28,7 @@ public class Observer implements Runnable {
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-        }
+        }*/
     }
 
     private void handleProcessedData(ProcessedDataObject data) {
