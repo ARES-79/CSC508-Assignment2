@@ -6,7 +6,6 @@ import View.AltMain;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.util.logging.Logger;
 
 public class MainController implements ActionListener {
@@ -25,18 +24,16 @@ public class MainController implements ActionListener {
             case ("Start") -> {
                 controllerLog.info(String.format("Connection attempted with:\n%s",
                         Blackboard.getInstance().getFormattedConnectionSettings()));
+                //TODO: most likely move check to be for when the users submit new IP addresses
                 try{
                     int eyeTracking_port = Integer.parseInt(Blackboard.getInstance().getEyeTrackingSocket_Port());
                     int emotion_port = Integer.parseInt(Blackboard.getInstance().getEmotionSocket_Port());
+                    //TODO: just the connect clients line will stay
                     parent.connectClients(eyeTracking_port, emotion_port);
                 } catch (NumberFormatException exception) {
                     controllerLog.warning("Invalid Ports.");
                     JOptionPane.showMessageDialog(parent, "Invalid Ports - ports must be integers.");
                 }
-                /*catch (IOException ex) {
-                    controllerLog.warning("Unable to connect to servers.");
-                    JOptionPane.showMessageDialog(parent, "Unable to connect to servers.");
-                }*/
 
             }
             case ("Stop") -> {

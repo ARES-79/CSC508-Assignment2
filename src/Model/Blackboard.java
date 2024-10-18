@@ -91,8 +91,8 @@ public class Blackboard {
     public String getFormattedConnectionSettings(){
         return String.format(
                 """
-                        \tEye Tracking Socket IP: %s:%s
-                        \tEmotion Tracking Socket IP: %s:%s
+                        \t\tEye Tracking Socket IP: %s:%s
+                        \t\tEmotion Tracking Socket IP: %s:%s
                         """,
             eyeTrackingSocket_Host, eyeTrackingSocket_Port,
             emotionSocket_Host, emotionSocket_Port);}
