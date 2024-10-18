@@ -35,15 +35,21 @@ public class DataProcessor implements Runnable {
                         dpLog.info("ProcessingThread: Processing data pair: " + eyeTrackingData + ", " + emotionData);
                         // Process the pair of data
                         List<Integer> coordinates = convertToIntegerList(eyeTrackingData);
-                        List<Float> emotionScores = convertToFloatList(emotionData);
+                        List<Float> emotionScores = null;
                         Emotion prominentEmotion;
-                        //if the emotion data is invalid, use neutral
-                        if (!isValidEmotionData(emotionScores)) {
-                            logInvalidEmotionData(emotionData);
-                            prominentEmotion = Emotion.NEUTRAL;
+                        if (emotionData != null){
+                             emotionScores = convertToFloatList(emotionData);
+                            //if the emotion data is invalid, use neutral
+                            if (!isValidEmotionData(emotionScores)) {
+                                logInvalidEmotionData(emotionData);
+                                prominentEmotion = Emotion.NEUTRAL;
+                            } else {
+                                prominentEmotion = getProminentEmotion(emotionScores);
+                            }
                         } else {
-                            prominentEmotion = getProminentEmotion(emotionScores);
+                            prominentEmotion = Emotion.NEUTRAL;
                         }
+
                         if (!isValidEyeTrackingData(coordinates)) {
                             logInvalidEyeTrackingData(eyeTrackingData);
                             continue;
@@ -65,6 +71,7 @@ public class DataProcessor implements Runnable {
                         dpLog.warning("ProcessingThread: Timed out waiting for data, or one client is slow.");
                     }
                 }
+                System.out.println("DataProcessor is not processing.");
                 Thread.sleep(500);
             }
         } catch (InterruptedException e) {
