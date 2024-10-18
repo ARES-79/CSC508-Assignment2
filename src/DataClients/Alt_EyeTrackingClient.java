@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 
 public class Alt_EyeTrackingClient extends Alt_ClientThread {
 
-    private static final String THREAD_NAME = "EyeTrackingClient";
+    public static final String THREAD_NAME = "EyeTrackingClient";
     public Alt_EyeTrackingClient(String host, int port){
         super(host, port);
         super.setLog(Logger.getLogger(Alt_EmotionDataClient.class.getName()));

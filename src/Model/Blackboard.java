@@ -31,6 +31,10 @@ public class Blackboard {
     public static final String PROPERTY_NAME_VIEW_DATA = "view data";
     private Deque<Circle> circleList;
 
+    //THREAD MAINTENANCE
+    public static final String PROPERTY_NAME_EYETHREAD_ERROR = "eye tracking thread error";
+    public static final String PROPERTY_NAME_EMOTIONTHREAD_ERROR = "eye emotion thread error";
+
     //MISC
     private static final int TIMEOUT_IN_MS = 500;
 
@@ -84,6 +88,15 @@ public class Blackboard {
         changeSupport.firePropertyChange(PROPERTY_NAME_VIEW_DATA, null, null);
     }
 
+    public String getFormattedConnectionSettings(){
+        return String.format(
+                """
+                        \tEye Tracking Socket IP: %s:%s
+                        \tEmotion Tracking Socket IP: %s:%s
+                        """,
+            eyeTrackingSocket_Host, eyeTrackingSocket_Port,
+            emotionSocket_Host, emotionSocket_Port);}
+
 
     public String getEyeTrackingSocket_Host() {
         return eyeTrackingSocket_Host;
@@ -123,5 +136,13 @@ public class Blackboard {
 
     public void removePropertyChangeListener(String propertyName, PropertyChangeListener pcl) {
         changeSupport.removePropertyChangeListener(propertyName, pcl);
+    }
+
+    public void reportEyeThreadError(String ex_message){
+        changeSupport.firePropertyChange(PROPERTY_NAME_EYETHREAD_ERROR, null, ex_message);
+    }
+
+    public void reportEmotionThreadError(String ex_message){
+        changeSupport.firePropertyChange(PROPERTY_NAME_EMOTIONTHREAD_ERROR, null, ex_message);
     }
 }

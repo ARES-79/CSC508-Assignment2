@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 public class Alt_DataProcessor extends CustomThread {
 
-    private static final String THREAD_NAME = "DataProcessor";
+    public static final String THREAD_NAME = "DataProcessor";
     public Alt_DataProcessor(){
         super();
         super.setLog(Logger.getLogger(Alt_DataProcessor.class.getName()));

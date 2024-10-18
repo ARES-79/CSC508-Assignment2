@@ -23,11 +23,8 @@ public class MainController implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         switch (e.getActionCommand()) {
             case ("Start") -> {
-                controllerLog.info(String.format("Connection attempted with:\n " +
-                        "\tEye Tracking Socket IP: %s" +
-                        "\tEmotion Tracking Socket IP: %s",
-                        Blackboard.getInstance().getEyeTrackingSocket_Host() + ":" +Blackboard.getInstance().getEyeTrackingSocket_Port(),
-                        Blackboard.getInstance().getEmotionSocket_Host() + ":" +Blackboard.getInstance().getEmotionSocket_Port()));
+                controllerLog.info(String.format("Connection attempted with:\n%s",
+                        Blackboard.getInstance().getFormattedConnectionSettings()));
                 try{
                     int eyeTracking_port = Integer.parseInt(Blackboard.getInstance().getEyeTrackingSocket_Port());
                     int emotion_port = Integer.parseInt(Blackboard.getInstance().getEmotionSocket_Port());

@@ -7,14 +7,12 @@ import TestServers.EmotionDataServer;
 import TestServers.EyeTrackingServer;
 
 import java.awt.*;
+import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.DataInputStream;
-import java.io.IOException;
-import java.net.Socket;
 import java.util.ArrayList;
 import javax.swing.*;
 
-public class AltMain extends JFrame {
+public class AltMain extends JFrame implements PropertyChangeListener {
 
     private static final String TESTING_FLAG = "-test";
 
@@ -53,6 +51,10 @@ public class AltMain extends JFrame {
 
         DrawPanel drawPanel = new DrawPanel();
         add(drawPanel, BorderLayout.CENTER);
+
+        //listen for errors in the client threads
+        Blackboard.getInstance().addChangeSupportListener(Blackboard.PROPERTY_NAME_EYETHREAD_ERROR, this);
+        Blackboard.getInstance().addChangeSupportListener(Blackboard.PROPERTY_NAME_EMOTIONTHREAD_ERROR, this);
     }
 
     /**
@@ -101,5 +103,28 @@ public class AltMain extends JFrame {
         eyeTrackingThread.start();
     }
 
+    public void createConnectionErrorPopUp(String main_message, String error_message){
+        JOptionPane.showMessageDialog(this,
+                String.format("%s\n\n%s\nError: %s", main_message,
+                        Blackboard.getInstance().getFormattedConnectionSettings(),
+                        error_message));
+    }
 
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+
+        switch (evt.getPropertyName()){
+            //disconnect everything if we can't connect to the eye tracking server
+            case Blackboard.PROPERTY_NAME_EYETHREAD_ERROR -> {
+                cleanUpThreads();
+                createConnectionErrorPopUp("Unable to connect to Eye Tracking server. \n" +
+                        "Please check that the server is running and the IP address is correct.", (String) evt.getNewValue());
+            }
+            //run without emotion data otherwise
+            case Blackboard.PROPERTY_NAME_EMOTIONTHREAD_ERROR ->
+                createConnectionErrorPopUp("Unable to connect to Emotion server. \n" +
+                        "Application will run without emotion data.", (String) evt.getNewValue());
+        }
+    }
 }

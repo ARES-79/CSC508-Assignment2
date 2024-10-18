@@ -10,10 +10,11 @@ import java.util.logging.Logger;
 
 public class Alt_EmotionDataClient extends Alt_ClientThread {
 
+    public static final String THREAD_NAME = "EmotionDataClient";
     public Alt_EmotionDataClient(String host, int port){
         super(host, port);
         super.setLog(Logger.getLogger(Alt_EmotionDataClient.class.getName()));
-        super.setThreadName("EmotionDataClient");
+        super.setThreadName(THREAD_NAME);
     }
     @Override
     public void doYourWork() throws InterruptedException, IOException {

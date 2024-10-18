@@ -28,6 +28,10 @@ public abstract class Alt_ClientThread extends CustomThread {
             this.inputStream = inputStream;
             super.run();
         } catch (IOException ex){
+            switch (super.getThreadName()){
+                case Alt_EmotionDataClient.THREAD_NAME -> Blackboard.getInstance().reportEmotionThreadError(ex.getMessage());
+                case Alt_EyeTrackingClient.THREAD_NAME -> Blackboard.getInstance().reportEyeThreadError(ex.getMessage());
+            }
             super.getLog().log(Level.SEVERE, super.getThreadName() + ": Unable to connect to server.");
         }
 
