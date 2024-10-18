@@ -23,7 +23,7 @@ public class Observer implements Runnable {
                         //Blackboard.getInstance().getDisplayArea().repaint(); // Trigger repaint
                         Blackboard.getInstance().getDrawPanel().repaint();
                     } else {
-                        Thread.sleep(100); // Add some sleep to avoid busy waiting
+                        Thread.sleep(500); // Add some sleep to avoid busy waiting
                     }
                 }
                 Thread.sleep(500);
