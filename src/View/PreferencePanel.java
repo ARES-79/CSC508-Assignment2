@@ -94,6 +94,10 @@ public class PreferencePanel extends JPanel {
             blackboard.setMaxCircles(maxCircles);
             blackboard.setThresholdRadius(thresholdRadius);
 
+            blackboard.getCircleList().clear(); // Clear existing circles
+
+            blackboard.getDrawPanel().repaint(); // Repaint the draw panel
+
             // If running, restart data retrieval
             if (blackboard.getStartFlag()) {
                try {
