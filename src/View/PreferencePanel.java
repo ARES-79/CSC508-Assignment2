@@ -4,6 +4,16 @@ import Model.Blackboard;
 import java.awt.*;
 import javax.swing.*;
 
+/**
+ * The {@code PreferencePanel} class represents a configuration panel that allows users to modify
+ * server connection settings, display parameters, and system behavior. This panel provides fields
+ * for setting IP addresses, ports, the maximum number of circles displayed, and the threshold radius
+ * for circle consolidation.
+ *
+ * When the "Apply" button is pressed, the updated values are applied to the {@link Blackboard},
+ * and the display is refreshed. If the system is actively running, it will restart data retrieval
+ * based on the new settings.
+ */
 public class PreferencePanel extends JPanel {
 
     private final JTextField emotionIpField;
@@ -13,11 +23,16 @@ public class PreferencePanel extends JPanel {
     private final JTextField maxCirclesField;
     private final JTextField thresholdRadiusField;
 
+    /**
+     * Constructs a {@code PreferencePanel} and initializes it with the current configuration values
+     * from the {@link Blackboard}. It creates fields for modifying emotion server and eye-tracking server
+     * connection details, along with parameters for visual display settings.
+     */
     public PreferencePanel() {
-        setPreferredSize(new Dimension(1000, 150));
+        setPreferredSize(new Dimension(1000, 150));  // Set the size of the panel
         setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(2, 2, 2, 2); // Set smaller padding
+        gbc.insets = new Insets(2, 2, 2, 2);  // Set smaller padding between components
 
         // Initialize fields with existing values from Blackboard
         Blackboard blackboard = Blackboard.getInstance();
@@ -57,14 +72,14 @@ public class PreferencePanel extends JPanel {
         gbc.gridx = 0;
         gbc.gridy = 2;
         add(new JLabel("Max Circles:"), gbc);
-        maxCirclesField = new JTextField(String.valueOf(blackboard.getMaxCircles()), 10); // Autofill with current value
+        maxCirclesField = new JTextField(String.valueOf(blackboard.getMaxCircles()), 10);  // Autofill with current value
         gbc.gridx = 1;
         add(maxCirclesField, gbc);
 
         // Threshold Radius
         gbc.gridx = 2;
         add(new JLabel("Threshold Radius:"), gbc);
-        thresholdRadiusField = new JTextField(String.valueOf(blackboard.getThresholdRadius()), 10); // Autofill with current value
+        thresholdRadiusField = new JTextField(String.valueOf(blackboard.getThresholdRadius()), 10);  // Autofill with current value
         gbc.gridx = 3;
         add(thresholdRadiusField, gbc);
 
@@ -78,6 +93,13 @@ public class PreferencePanel extends JPanel {
         add(applyButton, gbc);
     }
 
+    /**
+     * Applies the changes entered in the preference fields to the {@link Blackboard}.
+     *
+     * This method retrieves values from the input fields, validates them, and updates the corresponding
+     * settings in the {@code Blackboard}. It clears existing circles on the {@link DrawPanel}, repaints the
+     * display, and, if the system is running, restarts data retrieval with the updated settings.
+     */
     private void applyChanges() {
         try {
             // Update Blackboard with new values
