@@ -3,8 +3,22 @@ package Model;
 import java.awt.Color;
 import java.util.Deque;
 
+/**
+ * The {@code Observer} class continuously monitors the {@link Blackboard} for processed data objects
+ * and updates the display by managing the list of circles shown on the {@link View.DrawPanel}.
+ * 
+ * This class implements {@link Runnable} and is intended to be run as a separate thread.
+ * It handles the consolidation of circles based on proximity and dynamically updates the display.
+ */
 public class Observer implements Runnable {
 
+    /**
+     * Runs the main logic of the {@code Observer}, continuously checking for new processed data in the
+     * {@link Blackboard}'s processed data queue. If data is available, it updates the list of circles and repaints
+     * the draw panel to reflect the changes.
+     * 
+     * The method runs in an infinite loop and periodically sleeps to avoid busy waiting when no new data is available.
+     */
     @Override
     public void run() {
         try {
@@ -26,6 +40,15 @@ public class Observer implements Runnable {
         }
     }
 
+    /**
+     * Processes the received data by checking if the new circle can be consolidated with any existing circle.
+     * If the circle can be consolidated (i.e., it is within a specified threshold of another circle), the radius of
+     * the existing circle is increased. Otherwise, the new circle is added to the list of circles.
+     *
+     * If the maximum number of circles is exceeded, the oldest circle is removed.
+     * 
+     * @param data the processed data object containing the information for the new circle
+     */
     private void handleProcessedData(ProcessedDataObject data) {
         Deque<Circle> circleList = Blackboard.getInstance().getCircleList();
         Color circleColor = getColorFromEmotion(data.prominentEmotion());
@@ -52,6 +75,13 @@ public class Observer implements Runnable {
         Blackboard.getInstance().setCircleList(circleList);
     }
 
+    /**
+     * Determines whether the new circle is within the threshold radius of an existing circle.
+     * 
+     * @param existing the existing circle on the draw panel
+     * @param newCircle the new circle to be added
+     * @return {@code true} if the new circle is within the threshold radius of the existing circle, {@code false} otherwise
+     */
     private boolean isWithinThreshold(Circle existing, Circle newCircle) {
         int dx = existing.getX() - newCircle.getX();
         int dy = existing.getY() - newCircle.getY();
@@ -59,6 +89,12 @@ public class Observer implements Runnable {
         return distance <= Blackboard.getInstance().getThresholdRadius();
     }
 
+    /**
+     * Maps an emotion to a specific color.
+     * 
+     * @param emotion the emotion to map
+     * @return the corresponding {@link Color} for the given emotion
+     */
     private Color getColorFromEmotion(DataProcessor.Emotion emotion) {
         switch (emotion) {
             case NEUTRAL: return Color.GRAY;

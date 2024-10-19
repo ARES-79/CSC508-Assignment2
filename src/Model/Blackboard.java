@@ -9,6 +9,16 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
+
+/**
+ * The {@code Blackboard} class serves as the central hub for managing data across different components
+ * of the system. It holds data queues for eye-tracking and emotion information, a list of circles for the display,
+ * and settings for server information and display behavior.
+ * 
+ * This class follows the singleton design pattern, ensuring that only one instance of {@code Blackboard}
+ * exists during the application's lifecycle. It provides synchronized access to the data being exchanged 
+ * between components, and manages the state of data retrieval.
+ */
 public class Blackboard {
 
     private static final int TIMEOUT_IN_MS = 500;
@@ -50,6 +60,13 @@ public class Blackboard {
         eyeTrackingQueue.put(data);
     }
 
+    /**
+    * Retrieves and removes the head of the eye-tracking queue, waiting up to a specified
+    * timeout if necessary for an element to become available.
+    *
+    * @return the eye-tracking data or null if the specified timeout is reached
+    * @throws InterruptedException if interrupted while waiting
+    */
     public String pollEyeTrackingQueue() throws InterruptedException {
         return eyeTrackingQueue.poll(TIMEOUT_IN_MS, TimeUnit.MILLISECONDS);
     }
@@ -58,6 +75,13 @@ public class Blackboard {
         emotionQueue.put(data);
     }
 
+    /**
+    * Retrieves and removes the head of the emotion queue, waiting up to a specified
+    * timeout if necessary for an element to become available.
+    *
+    * @return the emotion data or null if the specified timeout is reached
+    * @throws InterruptedException if interrupted while waiting
+    */
     public String pollEmotionQueue() throws InterruptedException {
         return emotionQueue.poll(TIMEOUT_IN_MS, TimeUnit.MILLISECONDS);
     }
@@ -96,7 +120,7 @@ public class Blackboard {
     public int getThresholdRadius() {
         return thresholdRadius;
     } 
-    
+
     public int getCircleRadius() {
         return circleRadius;
     }

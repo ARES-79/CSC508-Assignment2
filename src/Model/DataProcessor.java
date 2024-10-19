@@ -6,14 +6,27 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+/**
+ * The {@code DataProcessor} class processes both eye-tracking and emotion data from queues.
+ * It validates, processes, and then converts this data into {@code ProcessedDataObject} instances
+ * that can be used for further operations. The data includes integer coordinates for eye-tracking
+ * and float-based emotion scores, with an emphasis on identifying the prominent emotion.
+ * 
+ * This class implements {@link Runnable} and is designed to run as a separate thread.
+ * 
+ * The class relies on a {@link Blackboard} to retrieve data from the input queues and add 
+ * processed data objects to the output queue.
+ */
 public class DataProcessor implements Runnable {
 
     private static final Logger dpLog = Logger.getLogger(DataProcessor.class.getName());
 
     private static final Emotion[] emotionValues = Emotion.values();
 
-
-    public enum Emotion{
+    /**
+     * Enum representing various emotions that can be processed.
+     */
+    public enum Emotion {
         NEUTRAL,
         FOCUS,
         STRESS,
@@ -22,11 +35,19 @@ public class DataProcessor implements Runnable {
         INTEREST
     }
 
+    /**
+     * Continuously processes eye-tracking and emotion data from the {@link Blackboard}.
+     * Validates the data, determines the prominent emotion, and adds the processed data
+     * to the processed data queue in the Blackboard.
+     * 
+     * If the data is invalid or missing, the method logs appropriate warnings and defaults to neutral emotion.
+     * The method runs indefinitely, periodically checking for new data and sleeping in between polling attempts.
+     */
     @Override
     public void run() {
         try {
             while (true) {
-                while (Blackboard.getInstance().getStartFlag()){
+                while (Blackboard.getInstance().getStartFlag()) {
                     // Poll with a timeout to prevent blocking indefinitely
                     String eyeTrackingData = Blackboard.getInstance().pollEyeTrackingQueue();
                     String emotionData = Blackboard.getInstance().pollEmotionQueue();
@@ -37,9 +58,10 @@ public class DataProcessor implements Runnable {
                         List<Integer> coordinates = convertToIntegerList(eyeTrackingData);
                         List<Float> emotionScores = null;
                         Emotion prominentEmotion;
-                        if (emotionData != null){
-                             emotionScores = convertToFloatList(emotionData);
-                            //if the emotion data is invalid, use neutral
+
+                        if (emotionData != null) {
+                            emotionScores = convertToFloatList(emotionData);
+                            // If the emotion data is invalid, default to neutral emotion
                             if (!isValidEmotionData(emotionScores)) {
                                 logInvalidEmotionData(emotionData);
                                 prominentEmotion = Emotion.NEUTRAL;
@@ -62,9 +84,7 @@ public class DataProcessor implements Runnable {
                         );
 
                         Blackboard.getInstance().addToProcessedDataQueue(processedData);
-                    }
-                    // debugging client/server communication
-                    else if (emotionData != null) {
+                    } else if (emotionData != null) {
                         dpLog.warning("ProcessingThread: Eye-tracking data is missing, but emotion data is present.");
                     } else {
                         // Handle timeout case or missing data
@@ -77,16 +97,27 @@ public class DataProcessor implements Runnable {
         } catch (InterruptedException e) {
             dpLog.log(Level.SEVERE, "Thread was interrupted", e);
             Thread.currentThread().interrupt();
-        } catch(Exception e){
+        } catch (Exception e) {
             dpLog.warning(e.toString());
         }
     }
 
-    private boolean isValidEyeTrackingData(List<Integer> data){
+    /**
+     * Validates that the eye-tracking data contains non-negative integers.
+     * 
+     * @param data the list of integers representing x-y coordinates for eye-tracking
+     * @return true if all integers in the list are non-negative, false otherwise
+     */
+    private boolean isValidEyeTrackingData(List<Integer> data) {
         return data != null && data.stream().allMatch(number -> number >= 0);
     }
 
-    // Helper method to convert eye-tracking data string into integer x-y coordinates
+    /**
+     * Converts a comma-separated string of integers (x, y coordinates) into a list of {@code Integer} objects.
+     * 
+     * @param data the comma-separated string of integers
+     * @return a list of integers, or null if the parsing fails due to an invalid format
+     */
     private List<Integer> convertToIntegerList(String data) {
         try {
             return Arrays.stream(data.split(","))
@@ -99,16 +130,32 @@ public class DataProcessor implements Runnable {
         }
     }
 
-    private void logInvalidEyeTrackingData(String data){
+    /**
+     * Logs an error message when invalid eye-tracking data is encountered.
+     * 
+     * @param data the invalid eye-tracking data string
+     */
+    private void logInvalidEyeTrackingData(String data) {
         dpLog.warning("Eye-tracking data must be in the form \"int, int\"\n where both are >= 0." +
                 "Invalid eye-tracking data format: " + data);
     }
 
-    private boolean isValidEmotionData(List<Float> data){
+    /**
+     * Validates that the emotion data contains floats between 0 and 1, inclusive.
+     * 
+     * @param data the list of floats representing emotion scores
+     * @return true if all floats are within the range [0, 1], false otherwise
+     */
+    private boolean isValidEmotionData(List<Float> data) {
         return data != null && data.stream().allMatch(number -> number >= 0 && number <= 1);
     }
 
-    // Helper method to convert emotion data to list of comparable floats
+    /**
+     * Converts a comma-separated string of floats (emotion scores) into a list of {@code Float} objects.
+     * 
+     * @param data the comma-separated string of floats
+     * @return a list of floats, or null if the parsing fails due to an invalid format
+     */
     private List<Float> convertToFloatList(String data) {
         try {
             return Arrays.stream(data.split(","))
@@ -121,7 +168,14 @@ public class DataProcessor implements Runnable {
         }
     }
 
-    public Emotion getProminentEmotion(List<Float> emotionScores){
+    /**
+     * Determines the prominent emotion based on the highest value in the emotion scores.
+     * 
+     * @param emotionScores the list of emotion scores
+     * @return the most prominent emotion based on the highest score
+     * @throws IllegalArgumentException if the list of emotion scores is null or empty
+     */
+    public Emotion getProminentEmotion(List<Float> emotionScores) {
         if (emotionScores == null || emotionScores.isEmpty()) {
             throw new IllegalArgumentException("List must not be null or empty");
         }
@@ -137,9 +191,13 @@ public class DataProcessor implements Runnable {
         return emotionValues[maxIndex + 1];
     }
 
-    private void logInvalidEmotionData(String data){
-        dpLog.warning("Emotion data is expected to be a comma seperated list of 5 floats between 0 and 1." +
+    /**
+     * Logs an error message when invalid emotion data is encountered.
+     * 
+     * @param data the invalid emotion data string
+     */
+    private void logInvalidEmotionData(String data) {
+        dpLog.warning("Emotion data is expected to be a comma separated list of 5 floats between 0 and 1." +
                 "Invalid emotion data format: " + data);
     }
-
 }
