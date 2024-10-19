@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
  * The {@code Blackboard} class serves as the central hub for managing data across different components
  * of the system. It holds data queues for eye-tracking and emotion information, a list of circles for the display,
  * and settings for server information and display behavior.
- *
+ * <p>
  * This class follows the singleton design pattern, ensuring that only one instance of {@code Blackboard}
  * exists during the application's lifecycle. It provides synchronized access to the data being exchanged
  * between components, and manages the state of data retrieval.

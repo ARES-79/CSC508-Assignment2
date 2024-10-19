@@ -2,6 +2,10 @@ package Data;
 
 import java.awt.*;
 
+
+/**
+ * Enum representing various emotions that can be processed.
+ */
 public enum Emotion {
     NONE(Color.GRAY, -1),
     FOCUS(Color.YELLOW, 0),

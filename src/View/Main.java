@@ -12,12 +12,32 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import javax.swing.*;
 
+/**
+ * The {@code Main} class serves as the entry point for the Eye Tracking & Emotion Hub application.
+ * It sets up the main window, initializes the user interface components, and starts the necessary threads
+ * for data retrieval, processing, and visualization.
+ * <p>
+ * The application displays a user interface with a panel for adjusting preferences, a draw panel for
+ * visualizing circles representing emotion and eye-tracking data, and a key panel explaining the color-coded emotions.
+ * <p>
+ * Main also acts as the default factory for necessary components.
+ * <p>
+ * If run with the "-test" flag, this class will also start the test servers for emotion and eye-tracking data.
+ *
+ * @author Andrew Estrada
+ * @author Sean Sponsler
+ */
 public class Main extends JFrame implements PropertyChangeListener {
 
     private static final String TESTING_FLAG = "-test";
 
     private final ArrayList<CustomThread> threads;
 
+    /**
+     * The main method starts the application, setting up the main window.
+     *
+     * @param args command-line arguments; if "-test" is passed, test servers are started
+     */
     public static void main (String[] args){
         Main window = new Main();
         window.setSize(1000,1000); // center on screen
@@ -30,6 +50,11 @@ public class Main extends JFrame implements PropertyChangeListener {
             window.startServerThreads();
         }
     }
+
+    /**
+     * Constructs the main window of the application, setting up the layout,
+     * menu bar, and integrating the preference panel, draw panel, and color key panel.
+     */
     public Main() {
         super("Eye Tracking & Emotion Hub");
         threads = new ArrayList<>();
@@ -70,7 +95,6 @@ public class Main extends JFrame implements PropertyChangeListener {
      * Closes all previous connections if present.
      * Attempts to connect to the sever IP addresses in blackboard.
      * Creates and starts all necessary threads.
-     *
      */
     public void connectClients() {
         int eyeTrackingPort = Blackboard.getInstance().getEyeTrackingSocket_Port();
@@ -92,6 +116,10 @@ public class Main extends JFrame implements PropertyChangeListener {
         for (CustomThread thread : threads){thread.start();}
     }
 
+    /**
+     * Stop all threads from running.
+     * They clean up all resources.
+     */
     public void cleanUpThreads(){
         for (CustomThread thread: threads){
             if (thread != null) {
@@ -101,6 +129,10 @@ public class Main extends JFrame implements PropertyChangeListener {
         threads.clear();
     }
 
+    /**
+     * Starts the test servers for emotion data and eye-tracking data.
+     * This method is called if the "-test" flag is provided as a command-line argument.
+     */
     private void startServerThreads(){
         System.out.println("Starting test servers.");
         Thread emotionServerThread = new Thread(new EmotionDataServer());
@@ -110,6 +142,12 @@ public class Main extends JFrame implements PropertyChangeListener {
         eyeTrackingThread.start();
     }
 
+    /**
+     * Display a pop-up to show error to user.
+     *
+     * @param main_message Message to be displayed on top
+     * @param error_message Message associated with error
+     */
     public void createConnectionErrorPopUp(String main_message, String error_message){
         JOptionPane.showMessageDialog(this,
                 String.format("%s\n\n%s\nError: %s", main_message,
@@ -117,7 +155,12 @@ public class Main extends JFrame implements PropertyChangeListener {
                         error_message));
     }
 
-
+    /**
+     * Deal with thread errors as necessary.
+     *
+     * @param evt A PropertyChangeEvent object describing the event source
+     *          and the property that has changed.
+     */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
 

@@ -8,6 +8,9 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.logging.Level;
 
+/**
+ * Establishes data and functions necessary for client threads.
+ */
 public abstract class ClientThread extends CustomThread {
 
     private final String IP_host;
@@ -20,6 +23,9 @@ public abstract class ClientThread extends CustomThread {
         this.IP_port = IP_port;
     }
 
+    /**
+     * Connect socket and perform work
+     */
     @Override
     public void run(){
         try(Socket connection = new Socket(IP_host, IP_port);
@@ -37,6 +43,9 @@ public abstract class ClientThread extends CustomThread {
 
     }
 
+    /**
+     * Clean up all resources
+     */
     @Override
     public void cleanUpThread(){
         try{ // Try to clean up everything outstanding
