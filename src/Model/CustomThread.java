@@ -4,12 +4,19 @@ import java.io.IOException;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
+/**
+ * Established data for threads to be managed
+ */
 public abstract class CustomThread extends Thread{
 
     private Logger log;
     private String threadName;
     private boolean running =  true;
 
+    /**
+     * try performing work and catch any exceptions.
+     * Log as necessary.
+     */
     @Override
     public void run() {
         try{
@@ -28,17 +35,22 @@ public abstract class CustomThread extends Thread{
         }
     }
 
+    /**
+     * Perform duties of thread
+     */
     public abstract void doYourWork() throws InterruptedException, IOException;
 
+    /**
+     * Clean up any outstanding resources as necessary
+     */
     public abstract void cleanUpThread();
 
+    /**
+     * Stop the loop of the thread so it can terminate
+     */
     public void stopThread() {
         running = false;
         //interrupt(); // Interrupt any blocking operations
-    }
-
-    public boolean isRunning() {
-        return running;
     }
 
     public void setThreadName(String threadName) {

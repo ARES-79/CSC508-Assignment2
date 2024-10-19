@@ -10,6 +10,13 @@ import java.io.IOException;
 import java.util.Deque;
 import java.util.logging.Logger;
 
+/**
+ * The {@code ViewDataProcessor} is alerted of new processed data available in the {@link Blackboard},
+ * converts it into the appropriate {@link Circle} data for visualization.
+ * <p>
+ * This class extends {@link CustomThread} and implements {@link PropertyChangeListener} and is intended to be run as a separate thread.
+ * It handles the consolidation of circles based on proximity and dynamically updates the display.
+ */
 public class ViewDataProcessor extends CustomThread implements PropertyChangeListener {
 
     private static final int MAX_CIRCLES = 5; // FIFO size limit
@@ -32,12 +39,24 @@ public class ViewDataProcessor extends CustomThread implements PropertyChangeLis
         }
     }
 
+    /**
+     * Remove the class as a Blackboard listener.
+     */
     @Override
     public void cleanUpThread() {
         Blackboard.getInstance().removePropertyChangeListener(
                 Blackboard.PROPERTY_NAME_PROCESSED_DATA, this);
     }
 
+    /**
+     * Processes the received data by checking if the new circle can be consolidated with any existing circle.
+     * If the circle can be consolidated (i.e., it is within a specified threshold of another circle), the radius of
+     * the existing circle is increased. Otherwise, the new circle is added to the list of circles.
+     * <p>
+     * If the maximum number of circles is exceeded, the oldest circle is removed.
+     *
+     * @param data the processed data object containing the information for the new circle
+     */
     private void handleProcessedData(ProcessedDataObject data) {
         Deque<Circle> circleList = Blackboard.getInstance().getCircleList();
         Color circleColor = data.prominentEmotion().getColor();
@@ -64,6 +83,13 @@ public class ViewDataProcessor extends CustomThread implements PropertyChangeLis
         Blackboard.getInstance().setCircleList(circleList);
     }
 
+    /**
+     * Collision checking
+     *
+     * @param existing circle already displayed
+     * @param newCircle new circle data
+     * @return true if there is a collision
+     */
     private boolean isWithinThreshold(Circle existing, Circle newCircle) {
         int dx = existing.getX() - newCircle.getX();
         int dy = existing.getY() - newCircle.getY();
@@ -71,6 +97,12 @@ public class ViewDataProcessor extends CustomThread implements PropertyChangeLis
         return distance <= THRESHOLD_RADIUS;
     }
 
+    /**
+     * Process the data when available.
+     *
+     * @param evt A PropertyChangeEvent object describing the event source
+     *          and the property that has changed.
+     */
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
         ProcessedDataObject data = Blackboard.getInstance().getFromProcessedDataObjectQueue();
