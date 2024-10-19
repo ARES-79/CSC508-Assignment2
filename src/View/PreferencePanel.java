@@ -1,6 +1,5 @@
 package View;
 
-import Controller.MainController;
 import Model.Blackboard;
 import java.awt.*;
 import javax.swing.*;
@@ -79,7 +78,7 @@ public class PreferencePanel extends JPanel {
         add(applyButton, gbc);
     }
 
-    public void applyChanges(){
+    private void applyChanges() {
         try {
             // Update Blackboard with new values
             Blackboard blackboard = Blackboard.getInstance();
