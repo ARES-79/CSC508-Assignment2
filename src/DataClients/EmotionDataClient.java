@@ -7,20 +7,22 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class EmotionDataClient implements Runnable {
-    private static final String IP_ADDRESS = "localhost";
-    private static final int PORT = 6000;
     private static final Logger emotionClientLog = Logger.getLogger(EmotionDataClient.class.getName());
 
     @Override
     public void run() {
-        try (Socket socket = new Socket(IP_ADDRESS, PORT);
-             DataInputStream inputStream = new DataInputStream(socket.getInputStream())){
+        Blackboard blackboard = Blackboard.getInstance();
+        String ipAddress = blackboard.getEmotionServerIp();
+        int port = blackboard.getEmotionServerPort();
 
-            while(true){
-                while (Blackboard.getInstance().getStartFlag()){
+        try (Socket socket = new Socket(ipAddress, port);
+             DataInputStream inputStream = new DataInputStream(socket.getInputStream())) {
+
+            while (true) {
+                while (blackboard.getStartFlag()) {
                     long startTime = System.currentTimeMillis();
                     String str = inputStream.readUTF();
-                    Blackboard.getInstance().addToEmotionQueue(str);
+                    blackboard.addToEmotionQueue(str);
                     long endTime = System.currentTimeMillis();
                     emotionClientLog.info("Received emotion data: " + str + " in " + (endTime - startTime) + "ms");
                 }
@@ -30,7 +32,7 @@ public class EmotionDataClient implements Runnable {
         } catch (InterruptedException e) {
             emotionClientLog.log(Level.SEVERE, "Thread was interrupted", e);
             Thread.currentThread().interrupt();
-        } catch(Exception e){
+        } catch (Exception e) {
             emotionClientLog.warning(e.toString());
         }
     }

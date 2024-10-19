@@ -16,7 +16,7 @@ public class EyeTrackingServer implements Runnable {
             while (true) {
                 long startTime = System.currentTimeMillis();
                 int x_pos = random.nextInt(1000);
-                int y_pos = random.nextInt(1000);
+                int y_pos = random.nextInt(1000-150); //adjust for vertical padding
                 outputStream.writeUTF(x_pos + ", " + y_pos);
                 outputStream.flush();  // Ensure each packet is sent immediately
                 long endTime = System.currentTimeMillis();

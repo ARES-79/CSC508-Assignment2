@@ -6,9 +6,6 @@ import java.util.Deque;
 
 public class Observer implements Runnable {
 
-    private static final int MAX_CIRCLES = 5; // FIFO size limit
-    private static final int THRESHOLD_RADIUS = 50; // Radius threshold for consolidation
-
     @Override
     public void run() {
         try {
@@ -40,7 +37,7 @@ public class Observer implements Runnable {
         boolean consolidated = false;
         for (Circle circle : circleList) {
             if (isWithinThreshold(circle, newCircle)) {
-                circle.increaseRadius(50); // Consolidate by increasing the radius
+                circle.increaseRadius(DisplayArea.CIRCLE_RADIUS); // Consolidate by increasing the radius
                 consolidated = true;
                 break;
             }
@@ -48,7 +45,7 @@ public class Observer implements Runnable {
 
         if (!consolidated) {
             // If the list is full, remove the oldest entry
-            if (circleList.size() == MAX_CIRCLES) {
+            if (circleList.size() == Blackboard.getInstance().getMaxCircles()) {
                 circleList.pollFirst();
             }
             circleList.addLast(newCircle); // Add the new circle
@@ -61,7 +58,7 @@ public class Observer implements Runnable {
         int dx = existing.getX() - newCircle.getX();
         int dy = existing.getY() - newCircle.getY();
         double distance = Math.sqrt(dx * dx + dy * dy);
-        return distance <= THRESHOLD_RADIUS;
+        return distance <= Blackboard.getInstance().getThresholdRadius();
     }
 
     private Color getColorFromEmotion(DataProcessor.Emotion emotion) {

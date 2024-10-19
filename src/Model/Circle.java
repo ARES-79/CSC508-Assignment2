@@ -36,5 +36,4 @@ public class Circle {
         this.radius += increment;
     }
 
-    /* Implement a function to draw a circle */
 }

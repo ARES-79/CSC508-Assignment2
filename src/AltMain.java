@@ -6,7 +6,9 @@ import Model.DataProcessor;
 import Model.Observer;
 import TestServers.EmotionDataServer;
 import TestServers.EyeTrackingServer;
+import View.ColorKeyPanel;
 import View.DrawPanel;
+import View.PreferencePanel;
 import java.awt.*;
 import javax.swing.*;
 
@@ -15,7 +17,7 @@ public class AltMain extends JFrame {
     private static final String TESTING_FLAG = "-test";
     public static void main (String[] args){
         AltMain window = new AltMain();
-        window.setSize(1000,1000); // center on screen
+        window.setSize(1200,1000); // center on screen
         window.setLocationRelativeTo(null);
         window.setVisible(true);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -43,8 +45,16 @@ public class AltMain extends JFrame {
         start.addActionListener(controller);
         stop.addActionListener(controller);
 
+        PreferencePanel preferencePanel = new PreferencePanel();
+        add(preferencePanel, BorderLayout.NORTH);
+
         DrawPanel drawPanel = Blackboard.getInstance().getDrawPanel();
+        drawPanel.setPreferredSize(new Dimension(1000,1000));
         add(drawPanel, BorderLayout.CENTER);
+
+        ColorKeyPanel colorKeyPanel = new ColorKeyPanel();
+        colorKeyPanel.setPreferredSize(new Dimension(200,1000));
+        add(colorKeyPanel, BorderLayout.EAST);
     }
 
     private void startAllThreads() {
