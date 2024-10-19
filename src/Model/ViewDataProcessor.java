@@ -10,15 +10,15 @@ import java.io.IOException;
 import java.util.Deque;
 import java.util.logging.Logger;
 
-public class DrawPanelDelegate extends CustomThread implements PropertyChangeListener {
+public class ViewDataProcessor extends CustomThread implements PropertyChangeListener {
 
     private static final int MAX_CIRCLES = 5; // FIFO size limit
     private static final int THRESHOLD_RADIUS = 50; // Radius threshold for consolidation
     public static final int CIRCLE_RADIUS = 50;
     private static final String THREAD_NAME = "ViewLogic";
-    public DrawPanelDelegate(){
+    public ViewDataProcessor(){
         super();
-        super.setLog(Logger.getLogger(DrawPanelDelegate.class.getName()));
+        super.setLog(Logger.getLogger(ViewDataProcessor.class.getName()));
         super.setName(THREAD_NAME);
         Blackboard.getInstance().addChangeSupportListener(
                 Blackboard.PROPERTY_NAME_PROCESSED_DATA, this);

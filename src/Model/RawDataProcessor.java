@@ -9,12 +9,12 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class DataProcessor extends CustomThread {
+public class RawDataProcessor extends CustomThread {
 
     public static final String THREAD_NAME = "DataProcessor";
-    public DataProcessor(){
+    public RawDataProcessor(){
         super();
-        super.setLog(Logger.getLogger(DataProcessor.class.getName()));
+        super.setLog(Logger.getLogger(RawDataProcessor.class.getName()));
         super.setName(THREAD_NAME);
     }
 

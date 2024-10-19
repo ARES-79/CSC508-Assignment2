@@ -75,8 +75,8 @@ public class Main extends JFrame implements PropertyChangeListener {
         CustomThread emotionThread = new EmotionDataClient(
                                                 Blackboard.getInstance().getEmotionSocket_Host(),
                                                 emotionPort);
-        CustomThread dataProcessor = new DataProcessor();
-        DrawPanelDelegate dpDelegate = new DrawPanelDelegate();
+        CustomThread dataProcessor = new RawDataProcessor();
+        ViewDataProcessor dpDelegate = new ViewDataProcessor();
 
         threads.add(eyeTrackingThread);
         threads.add(emotionThread);
