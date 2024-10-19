@@ -1,4 +1,6 @@
-package Model;
+package Data;
+
+import Model.Blackboard;
 
 import java.awt.*;
 
@@ -46,6 +48,18 @@ public class Circle {
 
     public void increaseRadius(int increment) {
         this.radius += increment;
+    }
+
+    public void drawCircle(Graphics g){
+        // do not draw in preferencepanel area
+        if (xCoord - radius >= Blackboard.paddingFromTop) {
+            g.setColor(color);
+            g.fillOval(xCoord - radius, yCoord - radius,
+                    2 * radius, 2 * radius);
+            g.setColor(Color.BLACK);
+            g.drawOval(xCoord - radius, yCoord - radius,
+                    2 * radius, 2 * radius);
+        }
     }
 
 }

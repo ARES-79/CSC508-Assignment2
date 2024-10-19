@@ -8,10 +8,12 @@ import java.util.Random;
 public class EmotionDataServer implements Runnable{
 
     public static void main(String[] args) {
+        System.out.println("Emotion Server Main");
         Random random = new Random();
         try (ServerSocket ss = new ServerSocket(6000);
              Socket connection = ss.accept();
-             DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream())) {
+             DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());) {
+            System.out.println("Emotion Connection Made");
 
             while (true) {
                 long startTime = System.currentTimeMillis();
@@ -28,7 +30,7 @@ public class EmotionDataServer implements Runnable{
             }
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("Emotion Sever: " + e.getMessage());
         }
     }
 

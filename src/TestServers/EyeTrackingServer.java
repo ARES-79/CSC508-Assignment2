@@ -8,11 +8,12 @@ import java.util.Random;
 public class EyeTrackingServer implements Runnable {
 
     public static void main(String[] args) {
+        System.out.println("Eye Tracking Server Main");
         Random random = new Random();
         try (ServerSocket ss = new ServerSocket(6001);
              Socket connection = ss.accept();
-             DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream())) {
-
+             DataOutputStream outputStream = new DataOutputStream(connection.getOutputStream());) {
+            System.out.println("Eye Tracking Connection Made");
             while (true) {
                 long startTime = System.currentTimeMillis();
                 int x_pos = random.nextInt(1000);
@@ -25,7 +26,7 @@ public class EyeTrackingServer implements Runnable {
             }
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            System.out.println("Eye Tracking Sever: " + e.getMessage());
         }
     }
 

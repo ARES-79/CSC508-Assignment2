@@ -15,10 +15,11 @@ public class ColorKeyPanel extends JPanel {
      * Constructs a {@code ColorKeyPanel} with a two-column grid layout. One column displays the emotion
      * labels, and the other column displays the corresponding color squares.
      */
+    //Todo: change to use emotion enums
     public ColorKeyPanel() {
         setLayout(new GridLayout(0, 2));
 
-        add(createCenteredLabel("Neutral"));
+        add(createCenteredLabel("None"));
         add(createColorLabel(Color.GRAY));
         
         add(createCenteredLabel("Focus"));
@@ -39,7 +40,7 @@ public class ColorKeyPanel extends JPanel {
 
     /**
      * Creates a centered label for an emotion with the specified text.
-     * 
+     *
      * @param text the text to display in the label
      * @return a {@link JLabel} containing the specified text, centered horizontally
      */
@@ -52,7 +53,7 @@ public class ColorKeyPanel extends JPanel {
     /**
      * Creates a label representing the color for an emotion.
      * The label is a square of size 20x20 with the specified background color.
-     * 
+     *
      * @param color the background color of the label
      * @return a {@link JLabel} with the specified background color and fixed size
      */
