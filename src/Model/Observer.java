@@ -1,6 +1,5 @@
 package Model;
 
-import View.DisplayArea;
 import java.awt.Color;
 import java.util.Deque;
 
@@ -15,7 +14,6 @@ public class Observer implements Runnable {
                     System.out.println("retrieved processed data: " + data);
                     if (data != null) {
                         handleProcessedData(data);
-                        //Blackboard.getInstance().getDisplayArea().repaint(); // Trigger repaint
                         Blackboard.getInstance().getDrawPanel().repaint();
                     } else {
                         Thread.sleep(200); // Add some sleep to avoid busy waiting
@@ -31,13 +29,13 @@ public class Observer implements Runnable {
     private void handleProcessedData(ProcessedDataObject data) {
         Deque<Circle> circleList = Blackboard.getInstance().getCircleList();
         Color circleColor = getColorFromEmotion(data.prominentEmotion());
-        Circle newCircle = new Circle(data.xCoord(), data.yCoord(), circleColor, DisplayArea.CIRCLE_RADIUS);
+        Circle newCircle = new Circle(data.xCoord(), data.yCoord(), circleColor, Blackboard.getInstance().getCircleRadius());
 
         // Check if the new circle is within the threshold of any existing circle
         boolean consolidated = false;
         for (Circle circle : circleList) {
             if (isWithinThreshold(circle, newCircle)) {
-                circle.increaseRadius(DisplayArea.CIRCLE_RADIUS); // Consolidate by increasing the radius
+                circle.increaseRadius(Blackboard.getInstance().getCircleRadius()); // Consolidate by increasing the radius
                 consolidated = true;
                 break;
             }

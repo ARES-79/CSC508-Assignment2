@@ -19,6 +19,7 @@ public class Blackboard {
 
     private int maxCircles = 5;
     private int thresholdRadius = 50;
+    private int circleRadius = 50;
 
     private final BlockingQueue<String> eyeTrackingQueue;
     private final BlockingQueue<String> emotionQueue;
@@ -94,6 +95,14 @@ public class Blackboard {
 
     public int getThresholdRadius() {
         return thresholdRadius;
+    } 
+    
+    public int getCircleRadius() {
+        return circleRadius;
+    }
+
+    public void setCircleRadius(int circleRadius) {
+        this.circleRadius = circleRadius;
     }
 
     public void setThresholdRadius(int thresholdRadius) {
