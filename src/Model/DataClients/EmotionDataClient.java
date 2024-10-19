@@ -1,19 +1,18 @@
-package DataClients;
+package Model.DataClients;
 
 
 import Model.Blackboard;
+import Model.ClientThread;
 
-import java.io.DataInputStream;
 import java.io.IOException;
-import java.net.Socket;
 import java.util.logging.Logger;
 
-public class Alt_EmotionDataClient extends Alt_ClientThread {
+public class EmotionDataClient extends ClientThread {
 
     public static final String THREAD_NAME = "EmotionDataClient";
-    public Alt_EmotionDataClient(String host, int port){
+    public EmotionDataClient(String host, int port){
         super(host, port);
-        super.setLog(Logger.getLogger(Alt_EmotionDataClient.class.getName()));
+        super.setLog(Logger.getLogger(EmotionDataClient.class.getName()));
         super.setThreadName(THREAD_NAME);
     }
     @Override

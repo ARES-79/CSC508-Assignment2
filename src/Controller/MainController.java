@@ -1,7 +1,7 @@
 package Controller;
 
 import Model.Blackboard;
-import View.AltMain;
+import View.Main;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
@@ -10,11 +10,11 @@ import java.util.logging.Logger;
 
 public class MainController implements ActionListener {
 
-    private final AltMain parent;
+    private final Main parent;
 
     private static final Logger controllerLog = Logger.getLogger(MainController.class.getName());
 
-    public MainController(AltMain parent) {
+    public MainController(Main parent) {
         this.parent = parent;
     }
 

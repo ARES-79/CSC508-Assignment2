@@ -1,18 +1,17 @@
-package DataClients;
+package Model.DataClients;
 
 import Model.Blackboard;
+import Model.ClientThread;
 
-import java.io.DataInputStream;
 import java.io.IOException;
-import java.net.Socket;
 import java.util.logging.Logger;
 
-public class Alt_EyeTrackingClient extends Alt_ClientThread {
+public class EyeTrackingClient extends ClientThread {
 
     public static final String THREAD_NAME = "EyeTrackingClient";
-    public Alt_EyeTrackingClient(String host, int port){
+    public EyeTrackingClient(String host, int port){
         super(host, port);
-        super.setLog(Logger.getLogger(Alt_EmotionDataClient.class.getName()));
+        super.setLog(Logger.getLogger(EmotionDataClient.class.getName()));
         super.setThreadName(THREAD_NAME);
     }
 

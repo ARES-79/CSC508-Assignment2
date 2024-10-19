@@ -1,5 +1,8 @@
 package Model;
 
+import Data.Circle;
+import Data.ProcessedDataObject;
+
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.Deque;

@@ -1,21 +1,21 @@
-package DataClients;
+package Model;
 
-import Model.Blackboard;
+import Model.DataClients.EmotionDataClient;
+import Model.DataClients.EyeTrackingClient;
 
-import javax.swing.*;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.logging.Level;
 
-public abstract class Alt_ClientThread extends CustomThread {
+public abstract class ClientThread extends CustomThread {
 
     private final String IP_host;
     private final int IP_port;
     private Socket connection;
     private DataInputStream inputStream;
 
-    public Alt_ClientThread(String IP_host, int IP_port) {
+    public ClientThread(String IP_host, int IP_port) {
         this.IP_host = IP_host;
         this.IP_port = IP_port;
     }
@@ -29,8 +29,8 @@ public abstract class Alt_ClientThread extends CustomThread {
             super.run();
         } catch (IOException ex){
             switch (super.getThreadName()){
-                case Alt_EmotionDataClient.THREAD_NAME -> Blackboard.getInstance().reportEmotionThreadError(ex.getMessage());
-                case Alt_EyeTrackingClient.THREAD_NAME -> Blackboard.getInstance().reportEyeThreadError(ex.getMessage());
+                case EmotionDataClient.THREAD_NAME -> Blackboard.getInstance().reportEmotionThreadError(ex.getMessage());
+                case EyeTrackingClient.THREAD_NAME -> Blackboard.getInstance().reportEyeThreadError(ex.getMessage());
             }
             super.getLog().log(Level.SEVERE, super.getThreadName() + ": Unable to connect to server.");
         }

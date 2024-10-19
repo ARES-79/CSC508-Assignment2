@@ -1,4 +1,4 @@
-package Model;
+package Data;
 
 import java.awt.*;
 
@@ -36,5 +36,12 @@ public class Circle {
         this.radius += increment;
     }
 
-    /* Implement a function to draw a circle */
+    public void drawCircle(Graphics g){
+        g.setColor(color);
+        g.fillOval(xCoord - radius, yCoord - radius,
+                2 * radius, 2 * radius);
+        g.setColor(Color.BLACK);
+        g.drawOval(xCoord - radius, yCoord - radius,
+                2 * radius, 2 * radius);
+    }
 }

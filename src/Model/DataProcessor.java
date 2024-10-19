@@ -1,6 +1,7 @@
 package Model;
 
-import DataClients.CustomThread;
+import Data.Emotion;
+import Data.ProcessedDataObject;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -8,12 +9,12 @@ import java.util.List;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
-public class Alt_DataProcessor extends CustomThread {
+public class DataProcessor extends CustomThread {
 
     public static final String THREAD_NAME = "DataProcessor";
-    public Alt_DataProcessor(){
+    public DataProcessor(){
         super();
-        super.setLog(Logger.getLogger(Alt_DataProcessor.class.getName()));
+        super.setLog(Logger.getLogger(DataProcessor.class.getName()));
         super.setName(THREAD_NAME);
     }
 

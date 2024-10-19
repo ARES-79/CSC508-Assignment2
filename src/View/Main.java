@@ -1,7 +1,7 @@
 package View;
 
 import Controller.MainController;
-import DataClients.*;
+import Model.DataClients.*;
 import Model.*;
 import TestServers.EmotionDataServer;
 import TestServers.EyeTrackingServer;
@@ -12,14 +12,14 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import javax.swing.*;
 
-public class AltMain extends JFrame implements PropertyChangeListener {
+public class Main extends JFrame implements PropertyChangeListener {
 
     private static final String TESTING_FLAG = "-test";
 
     private final ArrayList<CustomThread> threads;
 
     public static void main (String[] args){
-        AltMain window = new AltMain();
+        Main window = new Main();
         window.setSize(1000,1000); // center on screen
         window.setLocationRelativeTo(null);
         window.setVisible(true);
@@ -30,7 +30,7 @@ public class AltMain extends JFrame implements PropertyChangeListener {
             window.startServerThreads();
         }
     }
-    public AltMain() {
+    public Main() {
         super("Eye Tracking & Emotion Hub");
         threads = new ArrayList<>();
         setLayout(new BorderLayout());
@@ -69,13 +69,13 @@ public class AltMain extends JFrame implements PropertyChangeListener {
      */
     public void connectClients(int eyeTrackingPort, int emotionPort) {
         cleanUpThreads();
-        CustomThread eyeTrackingThread = new Alt_EyeTrackingClient(
+        CustomThread eyeTrackingThread = new EyeTrackingClient(
                                                 Blackboard.getInstance().getEyeTrackingSocket_Host(),
                                                 eyeTrackingPort);
-        CustomThread emotionThread = new Alt_EmotionDataClient(
+        CustomThread emotionThread = new EmotionDataClient(
                                                 Blackboard.getInstance().getEmotionSocket_Host(),
                                                 emotionPort);
-        CustomThread dataProcessor = new Alt_DataProcessor();
+        CustomThread dataProcessor = new DataProcessor();
         DrawPanelDelegate dpDelegate = new DrawPanelDelegate();
 
         threads.add(eyeTrackingThread);
