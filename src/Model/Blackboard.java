@@ -17,12 +17,13 @@ public class Blackboard {
 
     // EYE TRACKING DATA
     private String eyeTrackingSocket_Host = "localhost";  // default for testing
-    private String eyeTrackingSocket_Port = "6001";  // default for testing
+    private int eyeTrackingSocket_Port = 6001;  // default for testing
+
     private final BlockingQueue<String> eyeTrackingQueue;
 
     // EMOTION TRACKING DATA
     private String emotionSocket_Host = "localhost"; // default for testing
-    private String emotionSocket_Port = "6000"; // default for testing
+    private int emotionSocket_Port = 6000; // default for testing
     private final BlockingQueue<String> emotionQueue;
 
     //COMBINED DATA
@@ -33,6 +34,10 @@ public class Blackboard {
     //VIEW DATA
     public static final String PROPERTY_NAME_VIEW_DATA = "view data";
     private Deque<Circle> circleList;
+    private int maxCircles = 5;
+    private int thresholdRadius = 50;
+    private int circleRadius = 50;
+    public static final int paddingFromTop = 150; // height of the top panel
 
     //THREAD MAINTENANCE
     public static final String PROPERTY_NAME_EYETHREAD_ERROR = "eye tracking thread error";
@@ -40,6 +45,7 @@ public class Blackboard {
 
     //MISC
     private static final int TIMEOUT_IN_MS = 500;
+
 
     private static final Blackboard INSTANCE = new Blackboard();
 
@@ -105,7 +111,7 @@ public class Blackboard {
         return eyeTrackingSocket_Host;
     }
 
-    public String getEyeTrackingSocket_Port() {
+    public int getEyeTrackingSocket_Port() {
         return eyeTrackingSocket_Port;
     }
 
@@ -113,7 +119,7 @@ public class Blackboard {
         return emotionSocket_Host;
     }
 
-    public String getEmotionSocket_Port() {
+    public int getEmotionSocket_Port() {
         return emotionSocket_Port;
     }
 
@@ -121,7 +127,7 @@ public class Blackboard {
         this.eyeTrackingSocket_Host = eyeTrackingSocket_Host;
     }
 
-    public void setEyeTrackingSocket_Port(String eyeTrackingSocket_Port) {
+    public void setEyeTrackingSocket_Port(int eyeTrackingSocket_Port) {
         this.eyeTrackingSocket_Port = eyeTrackingSocket_Port;
     }
 
@@ -129,12 +135,35 @@ public class Blackboard {
         this.emotionSocket_Host = emotionSocket_Host;
     }
 
-    public void setEmotionSocket_Port(String emotionSocket_Port) {
+    public void setEmotionSocket_Port(int emotionSocket_Port) {
         this.emotionSocket_Port = emotionSocket_Port;
     }
 
     public void addChangeSupportListener(String propertyName, PropertyChangeListener pcl) {
         changeSupport.addPropertyChangeListener(propertyName, pcl);
+    }
+    public int getMaxCircles() {
+        return maxCircles;
+    }
+
+    public void setMaxCircles(int maxCircles) {
+        this.maxCircles = maxCircles;
+    }
+
+    public int getThresholdRadius() {
+        return thresholdRadius;
+    }
+
+    public int getCircleRadius() {
+        return circleRadius;
+    }
+
+    public void setCircleRadius(int circleRadius) {
+        this.circleRadius = circleRadius;
+    }
+
+    public void setThresholdRadius(int thresholdRadius) {
+        this.thresholdRadius = thresholdRadius;
     }
 
     public void removePropertyChangeListener(String propertyName, PropertyChangeListener pcl) {

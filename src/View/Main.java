@@ -50,7 +50,15 @@ public class Main extends JFrame implements PropertyChangeListener {
         stop.addActionListener(controller);
 
         DrawPanel drawPanel = new DrawPanel();
+        drawPanel.setPreferredSize(new Dimension(1000,1000));
         add(drawPanel, BorderLayout.CENTER);
+
+        PreferencePanel preferencePanel = new PreferencePanel();
+        add(preferencePanel, BorderLayout.NORTH);
+
+        ColorKeyPanel colorKeyPanel = new ColorKeyPanel();
+        colorKeyPanel.setPreferredSize(new Dimension(200,1000));
+        add(colorKeyPanel, BorderLayout.EAST);
 
         //listen for errors in the client threads
         Blackboard.getInstance().addChangeSupportListener(Blackboard.PROPERTY_NAME_EYETHREAD_ERROR, this);
@@ -63,11 +71,10 @@ public class Main extends JFrame implements PropertyChangeListener {
      * Attempts to connect to the sever IP addresses in blackboard.
      * Creates and starts all necessary threads.
      *
-     *
-     * @param eyeTrackingPort port for IP of eye tracking server as int
-     * @param emotionPort port for IP of emotion server as int
      */
-    public void connectClients(int eyeTrackingPort, int emotionPort) {
+    public void connectClients() {
+        int eyeTrackingPort = Blackboard.getInstance().getEyeTrackingSocket_Port();
+        int emotionPort = Blackboard.getInstance().getEmotionSocket_Port();
         cleanUpThreads();
         CustomThread eyeTrackingThread = new EyeTrackingClient(
                                                 Blackboard.getInstance().getEyeTrackingSocket_Host(),
